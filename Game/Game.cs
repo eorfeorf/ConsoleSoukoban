@@ -12,6 +12,7 @@ namespace Souko.Game
         // 初期値のゴールの位置
         private static List<int> goals = new List<int>();
 
+        // プレイヤーの進行方向.
         private static Dir moveDir;
 
         // 読み込んだマップ状態.
