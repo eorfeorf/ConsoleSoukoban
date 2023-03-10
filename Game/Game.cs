@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using static Souko.GameDefine;
 
-namespace Souko
+namespace Souko.Game
 {
-    internal class Program
+    internal static class Game
     {
-
         // 現在地のプレイヤーの位置.
         private static int playerPos;
 
@@ -51,19 +49,19 @@ namespace Souko
                     Initialize(mapData);
                 }
                 
-                // 他のキー.
-                if (keyToDirTable.ContainsKey(key))
+                // プレイヤー移動.
+                if (KeyToDirTable.ContainsKey(key))
                 {
-                    // プレイヤーの移動方向.
-                    moveDir = keyToDirTable[key];
+                    // 移動方向.
+                    moveDir = KeyToDirTable[key];
                     
                     // 不正移動先判定.
                     var nextPosition = GetPlayerNextPosition(moveDir);
-                    bool isValidState = CheckValidState(nextPosition, invalidStateTable1);
+                    bool isValidState = CheckValidState(nextPosition, DirToMoveIndex[(int)moveDir]);
                     if (!isValidState) continue;
 
                     // 移動適用.
-                    ApplyNextPosition(playerPos, nextPosition, moveDir);
+                    ApplyNextPosition(playerPos, nextPosition, DirToMoveIndex[(int)moveDir]);
                 }
             }
 
@@ -71,6 +69,10 @@ namespace Souko
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// 終了判定.
+        /// </summary>
+        /// <returns></returns>
         private static bool IsGameEnd()
         {
             foreach (var g in goals)
@@ -123,17 +125,6 @@ namespace Souko
             Console.Write("\n");
             return Console.ReadKey().Key;
         }
-        
-        /// <summary>
-        /// 入力チェック.
-        /// </summary>
-        /// <returns>true:continueする. false:continueしない. </returns>
-        private static bool CheckValidInput(ConsoleKey key)
-        {
-
-            return false;
-        }
-        
 
         /// <summary>
         /// 移動を適用.
@@ -141,27 +132,13 @@ namespace Souko
         /// <param name="nowPosition"></param>
         /// <param name="nextPosition"></param>
         /// <param name="dir"></param>
-        private static void ApplyNextPosition(int nowPosition, int nextPosition, Dir dir)
+        private static void ApplyNextPosition(int nowPosition, int nextPosition, int moveValue)
         {
-            // 進行方向1マス先に石があるか.
-            var existStone = mapStatus[nextPosition] == State.Stone;
-            if (existStone)
+            // 石の位置を更新.
+            if (mapStatus[nextPosition] == State.Stone)
             {
-                // 石が動かせる位置にあるか.
-                var canStoneMove = CanStoneMove(nextPosition, dir);
-                if (canStoneMove)
-                {
-                    // 動かせる.
-                    // 石の位置を更新.
-                    var stoneNextPositino = nextPosition + dirToMoveIndex[(int) dir];
-                    UpdateStatus(nextPosition, stoneNextPositino, State.Stone);
-                }
-                else
-                {
-                    // 動かせない.
-                    // プレイヤーの位置を修正する.
-                    nextPosition = nowPosition;
-                }
+                var nextPosition2Ahead = nextPosition + moveValue;
+                UpdateStatus(nextPosition, nextPosition2Ahead, State.Stone);
             }
 
             // プレイヤーの位置を更新.
@@ -189,29 +166,6 @@ namespace Souko
         {
             mapStatus[nowPosition] = State.None;
             mapStatus[nextPosition] = state;
-        }
-
-        /// <summary>
-        /// 石の動かせるか.
-        /// </summary>
-        /// <param name="nextPosition"></param>
-        /// <param name="dir"></param>
-        /// <returns></returns>
-        private static bool CanStoneMove(int nextPosition, Dir dir)
-        {
-            // プレイヤーの移動先に石があるか.
-            if (mapStatus[nextPosition] == State.Stone)
-            {
-                // 石の移動先が壁や石がなければ動かせる.
-                var tmpPos = nextPosition + dirToMoveIndex[(int) dir];
-                var isValidState = CheckValidState(tmpPos, invalidStateTable2);
-                if (isValidState)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -275,15 +229,15 @@ namespace Souko
             }
             return ret;
         }
-        
+
 
         /// <summary>
         /// 移動先が正常な状態か.
         /// </summary>
         /// <param name="nextPosition"></param>
-        /// <param name="invalidStateTable"></param>
+        /// <param name="moveValue"></param>
         /// <returns></returns>
-        private static bool CheckValidState(int nextPosition, State[] invalidStateTable)
+        private static bool CheckValidState(int nextPosition, int moveValue)
         {
             // マップ外.
             var isValidMapRange = 0 <= nextPosition && nextPosition < mapData.Length;
@@ -294,12 +248,25 @@ namespace Souko
 
             // 移動先が有効な状態か.
             var state = mapStatus[nextPosition];
-            bool isInvalidState = invalidStateTable.Any(x => x == state);
-            if (isInvalidState)
+            
+            // 壁.
+            if (state == State.Wall)
             {
                 return false;
             }
-
+            
+            // 石.
+            if (state == State.Stone)
+            {
+                // 石の先が移動できるか.
+                var nextPosition2Ahead = nextPosition + moveValue;
+                var state2 = mapStatus[nextPosition2Ahead];
+                if (state2 == State.Wall || state2 == State.Stone)
+                {
+                    return false;
+                }
+            }
+            
             return true;
         }
 
@@ -311,7 +278,7 @@ namespace Souko
         private static int GetPlayerNextPosition(Dir dir)
         {
             //Console.Write(dir);
-            return playerPos + dirToMoveIndex[(int) dir];
+            return playerPos + DirToMoveIndex[(int) dir];
         }
 
         /// <summary>
@@ -327,7 +294,7 @@ namespace Souko
                     Console.Write("\n");
                 }
 
-                var s = stateToIconTable[(int) status[i]];
+                var s = StateToIconTable[(int) status[i]];
                 Console.Write(s);
             }
         }

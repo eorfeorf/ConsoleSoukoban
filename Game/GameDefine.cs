@@ -48,17 +48,17 @@ namespace Souko
         };
 
         // 方向による移動量テーブル.
-        public static int[] dirToMoveIndex =
+        public static readonly int[] DirToMoveIndex =
         {
             0,
-            -10,
+            -MapLength,
             1,
-            10,
+            MapLength,
             -1,
         };
 
         // キーによる方向テーブル.
-        public static Dictionary<ConsoleKey, Dir> keyToDirTable = new Dictionary<ConsoleKey, Dir>()
+        public static readonly Dictionary<ConsoleKey, Dir> KeyToDirTable = new Dictionary<ConsoleKey, Dir>()
         {
             {ConsoleKey.W, Dir.Up},
             {ConsoleKey.A, Dir.Left},
@@ -67,26 +67,13 @@ namespace Souko
         };
 
         // タイプによるアイコンテーブル.
-        public static string[] stateToIconTable =
+        public static readonly string[] StateToIconTable =
         {
             "　",
             "壁",
             "石",
             "〇",
             "ロ",
-        };
-
-        // １コマ先で移動不可能な状態テーブル.
-        public static State[] invalidStateTable1 =
-        {
-            State.Wall,
-        };
-
-        // ２コマ先で移動不可能な状態テーブル.
-        public static State[] invalidStateTable2 =
-        {
-            State.Wall,
-            State.Stone,
         };
     }
 }
