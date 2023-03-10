@@ -43,16 +43,28 @@ namespace Souko
                 }
 
                 // 入力.
-                var isContinue = UpdateInput();
-                if (isContinue) continue;
-               
-                // 不正移動先判定.
-                var nextPosition = GetPlayerNextPosition(moveDir);
-                bool isValidState = CheckValidState(nextPosition, invalidStateTable1);
-                if (!isValidState) continue;
+                var key = GetKey();
+                
+                // リセット.
+                if (key == ConsoleKey.R)
+                {
+                    Initialize(mapData);
+                }
+                
+                // 他のキー.
+                if (keyToDirTable.ContainsKey(key))
+                {
+                    // プレイヤーの移動方向.
+                    moveDir = keyToDirTable[key];
+                    
+                    // 不正移動先判定.
+                    var nextPosition = GetPlayerNextPosition(moveDir);
+                    bool isValidState = CheckValidState(nextPosition, invalidStateTable1);
+                    if (!isValidState) continue;
 
-                // 移動適用.
-                ApplyNextPosition(playerPos, nextPosition, moveDir);
+                    // 移動適用.
+                    ApplyNextPosition(playerPos, nextPosition, moveDir);
+                }
             }
 
             Console.WriteLine("\n===おわり===\n");
@@ -103,30 +115,22 @@ namespace Souko
         }
 
         /// <summary>
-        /// 入力.
+        /// 入力取得.
+        /// </summary>
+        /// <returns></returns>
+        private static ConsoleKey GetKey()
+        {
+            Console.Write("\n");
+            return Console.ReadKey().Key;
+        }
+        
+        /// <summary>
+        /// 入力チェック.
         /// </summary>
         /// <returns>true:continueする. false:continueしない. </returns>
-        private static bool UpdateInput()
+        private static bool CheckValidInput(ConsoleKey key)
         {
-            // 入力.
-            Console.Write("\n");
-            var key = Console.ReadKey().Key;
-            
-            // リセット.
-            if (key == ConsoleKey.R)
-            {
-                Initialize(mapData);
-                return true;
-            }
 
-            // 他のキー.
-            if (!keyToDirTable.ContainsKey(key))
-            {
-                return true;
-            }
-
-            // プレイヤー移動.
-            moveDir = keyToDirTable[key];
             return false;
         }
         
