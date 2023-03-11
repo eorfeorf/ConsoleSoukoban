@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,12 +44,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game\GameDefine.cs" />
+    <Compile Include="Game\Data\Map\IMapDataStore.cs" />
+    <Compile Include="Game\Data\Map\MapDataStore.cs" />
+    <Compile Include="Game\Data\Map\MapRepository.cs" />
+    <Compile Include="Game\Domain\GameDefine.cs" />
+    <Compile Include="Game\Domain\Map\IMapRepository.cs" />
+    <Compile Include="Game\Domain\UseCase\MapUseCase.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Game\Entity" />
+    <Folder Include="Game\Presentation\View" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

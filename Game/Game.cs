@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Souko.Game.Domain;
+using Souko.Game.Domain.Map;
 using static Souko.GameDefine;
 
 namespace Souko.Game
@@ -15,13 +17,15 @@ namespace Souko.Game
         // プレイヤーの進行方向.
         private static Dir moveDir;
 
-        // 読み込んだマップ状態.
-        private static State[] mapStatus;
-
+        private static MapUseCase mapUseCase;
+        
         // エントリポイント.
         static void Main(string[] args)
         {
-            var fail = Initialize(mapData);
+            // Resolve.
+            mapUseCase = new MapUseCase(new MapRepository(new MapDataStore()));
+            
+            var fail = Initialize(0);
             if (fail)
             {
                 Console.WriteLine("不正データの発見.");
@@ -33,7 +37,7 @@ namespace Souko.Game
             while (true)
             {
                 CursorReset();
-                DrawMap(mapStatus);
+                DrawMap(mapUseCase.Status);
 
                 // ゴール判定.
                 if (IsGameEnd())
@@ -47,7 +51,7 @@ namespace Souko.Game
                 // リセット.
                 if (key == ConsoleKey.R)
                 {
-                    Initialize(mapData);
+                    Initialize(0);
                 }
                 
                 // プレイヤー移動.
@@ -78,7 +82,7 @@ namespace Souko.Game
         {
             foreach (var g in goals)
             {
-                var nowState = mapStatus[g];
+                var nowState = mapUseCase.Status[g];
                 if (nowState != State.Stone)
                 {
                     return false;
@@ -93,13 +97,16 @@ namespace Souko.Game
         /// </summary>
         /// <param name="mapData"></param>
         /// <returns>false:正常 true:異常</returns>
-        private static bool Initialize(int[]mapData)
+        private static bool Initialize(int mapId)
         {
             // マップ読み込み.
-            mapStatus = LoadMap(mapData);
+            if (!mapUseCase.Load(mapId))
+            {
+                Console.WriteLine("マップデータが存在しません。");
+            }
             
             // プレイヤー位置.
-            playerPos = GetStatePosition(mapStatus, State.Player);
+            playerPos = mapUseCase.GetStatePosition(State.Player);
             if (playerPos == InvalidIndex)
             {
                 Console.WriteLine("マップデータにプレイヤーが見つかりませんでした。");
@@ -107,7 +114,7 @@ namespace Souko.Game
             }
             
             // ゴール位置.
-            goals = GetStatePositions(mapStatus, State.Goal);
+            goals = mapUseCase.GetStatePositions(State.Goal);
             if (goals.Count == 0)
             {
                 Console.WriteLine("マップデータにゴールが見つかりませんでした。");
@@ -136,102 +143,27 @@ namespace Souko.Game
         private static void ApplyNextPosition(int nowPosition, int nextPosition, int moveValue)
         {
             // 石の位置を更新.
-            if (mapStatus[nextPosition] == State.Stone)
+            if (mapUseCase.Status[nextPosition] == State.Stone)
             {
                 var nextPosition2Ahead = nextPosition + moveValue;
-                UpdateStatus(nextPosition, nextPosition2Ahead, State.Stone);
+                mapUseCase.UpdateStatus(nextPosition, nextPosition2Ahead, State.Stone);
             }
 
             // プレイヤーの位置を更新.
-            UpdateStatus(nowPosition, nextPosition, State.Player);
+            mapUseCase.UpdateStatus(nowPosition, nextPosition, State.Player);
             playerPos = nextPosition;
 
             // ゴールの位置を復活
             // Noneということはそのマスには誰もいない.
             foreach (var g in goals)
             {
-                if (mapStatus[g] == State.None)
+                if (mapUseCase.Status[g] == State.None)
                 {
-                    UpdateStatus(g, g, State.Goal);
+                    mapUseCase.UpdateStatus(g, g, State.Goal);
                 }
             }
-        }
-
-        /// <summary>
-        /// 状態を更新.
-        /// </summary>
-        /// <param name="nowPosition"></param>
-        /// <param name="nextPosition"></param>
-        /// <param name="state"></param>
-        private static void UpdateStatus(int nowPosition, int nextPosition, State state)
-        {
-            mapStatus[nowPosition] = State.None;
-            mapStatus[nextPosition] = state;
-        }
-
-        /// <summary>
-        /// マップデータから読み込み.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private static State[] LoadMap(int[] data)
-        {
-            State[] ret = new State[data.Length];
-            for (int i = 0; i < mapData.Length; ++i)
-            {
-                ret[i] = (State) mapData[i];
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        /// ある状態の座標をA取得.
-        /// </summary>
-        /// <param name="map"></param>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        private static int GetStatePosition(State[] map, State state)
-        {
-            var i = 0;
-            for (i = 0; i < map.Length; i++)
-            {
-                if (map[i] == state)
-                {
-                    return i;
-                }
-            }
-
-            Console.WriteLine($"指定した状態がマップ上に存在しません.\nstate:{state}");
-            return -1;
         }
         
-        /// <summary>
-        /// ある状態の座標をA取得.
-        /// </summary>
-        /// <param name="map"></param>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        private static List<int> GetStatePositions(State[] map, State state)
-        {
-            var ret = new List<int>();
-            var i = 0;
-            for (i = 0; i < map.Length; i++)
-            {
-                if (map[i] == state)
-                {
-                    ret.Add(i);
-                }
-            }
-
-            if(ret.Count == 0)
-            {
-                Console.WriteLine($"指定した状態がマップ上に存在しません.\nstate:{state}");
-            }
-            return ret;
-        }
-
-
         /// <summary>
         /// 移動先が正常な状態か.
         /// </summary>
@@ -241,14 +173,14 @@ namespace Souko.Game
         private static bool CheckValidState(int nextPosition, int moveValue)
         {
             // マップ外.
-            var isValidMapRange = 0 <= nextPosition && nextPosition < mapData.Length;
+            var isValidMapRange = 0 <= nextPosition && nextPosition < mapUseCase.Status.Length;
             if (!isValidMapRange)
             {
                 return false;
             }
 
             // 移動先が有効な状態か.
-            var state = mapStatus[nextPosition];
+            var state = mapUseCase.Status[nextPosition];
             
             // 壁.
             if (state == State.Wall)
@@ -261,7 +193,7 @@ namespace Souko.Game
             {
                 // 石の先が移動できるか.
                 var nextPosition2Ahead = nextPosition + moveValue;
-                var state2 = mapStatus[nextPosition2Ahead];
+                var state2 = mapUseCase.Status[nextPosition2Ahead];
                 if (state2 == State.Wall || state2 == State.Stone)
                 {
                     return false;
