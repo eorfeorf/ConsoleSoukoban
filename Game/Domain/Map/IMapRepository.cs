@@ -1,7 +1,6 @@
-﻿namespace Souko.Game.Domain.Map
+﻿namespace Souko.Game.Domain.Map;
+
+public interface IMapRepository
 {
-    public interface IMapRepository
-    {
-        public int[] Load(int mapId);
-    }
+    public int[] Load(int mapId);
 }

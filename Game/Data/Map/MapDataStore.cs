@@ -1,4 +1,4 @@
-﻿namespace Souko.Game.Domain.Map;
+﻿namespace Souko.Game.Data.Map;
 
 public class MapDataStore : IMapDataStore
 {
