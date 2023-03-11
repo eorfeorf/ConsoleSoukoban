@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Souko.Game.Data.Map;
-using Souko.Game.Domain;
-using Souko.Game.Domain.Map;
 using Souko.Game.Domain.UseCase;
 using Souko.Game.Presentation.Input;
 using Souko.Game.Presentation.View;
@@ -27,11 +25,7 @@ namespace Souko.Game
         // エントリポイント.
         static void Main(string[] args)
         {
-            // Resolve.
-            mapUseCase = new MapUseCase(
-                new MapRepository(new MapDataStore()),
-                new MapView(new CliMapDrawer(new CliDrawer())));
-            inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
+            DependencyResolve();
             
             // 初期化.
             var fail = Initialize(0);
@@ -45,7 +39,6 @@ namespace Souko.Game
             // メインループ.
             while (true)
             {
-                CursorReset();
                 mapUseCase.Draw();
 
                 // ゴール判定.
@@ -81,6 +74,18 @@ namespace Souko.Game
             Console.ReadKey();
         }
 
+        private static void DependencyResolve()
+        {
+            mapUseCase = new MapUseCase(
+                new MapRepository(new MapDataStore()),
+                new MapView(
+                    new CliMapDrawer(new CliDrawer()),
+                    new CliMapViewSetupper()
+                )
+            );
+            inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
+        }
+
         /// <summary>
         /// 終了判定.
         /// </summary>
@@ -102,7 +107,7 @@ namespace Souko.Game
         /// <summary>
         /// 初期化。マップ読み込み等.
         /// </summary>
-        /// <param name="mapData"></param>
+        /// <param name="mapId"></param>
         /// <returns>false:正常 true:異常</returns>
         private static bool Initialize(int mapId)
         {
@@ -209,15 +214,6 @@ namespace Souko.Game
         {
             //Console.Write(dir);
             return playerPos + DirToMoveIndex[(int) dir];
-        }
-
-        /// <summary>
-        /// 描画位置を左上に.
-        /// </summary>
-        private static void CursorReset()
-        {
-            Console.CursorLeft = 0;
-            Console.CursorTop = 0;
         }
     }
 }

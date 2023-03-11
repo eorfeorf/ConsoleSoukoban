@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Souko.Game.Data.Map;
 using Souko.Game.Domain.Map;
 
 namespace Souko.Game.Domain.UseCase;

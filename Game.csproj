@@ -59,10 +59,12 @@
     <Compile Include="Game\Presentation\Input\InputController.cs" />
     <Compile Include="Game\Presentation\View\IDrawer.cs" />
     <Compile Include="Game\Presentation\View\IMapDrawer.cs" />
+    <Compile Include="Game\Presentation\View\IMapViewSetupper.cs" />
     <Compile Include="Game\Presentation\View\MapView.cs" />
     <Compile Include="Game\UI\Input\InputKeyboard.cs" />
     <Compile Include="Game\UI\View\CliDrawer.cs" />
     <Compile Include="Game\UI\View\CliMapDrawer.cs" />
+    <Compile Include="Game\UI\View\CliMapViewSetupper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
