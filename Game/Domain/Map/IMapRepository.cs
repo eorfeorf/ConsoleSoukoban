@@ -2,5 +2,7 @@
 
 public interface IMapRepository
 {
-    public int[] Load(int mapId);
+    public GameDefine.State[] Status { get; }
+    
+    public bool Load(int mapId);
 }

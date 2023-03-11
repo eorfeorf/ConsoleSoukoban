@@ -10,20 +10,25 @@ namespace Souko.Game.Domain.UseCase;
 /// </summary>
 public class MapUseCase
 {
-    public GameDefine.State[] Status => status;
-        
+    public GameDefine.State[] Status => mapRepository.Status;
+    
     private IMapRepository mapRepository;
-    private GameDefine.State[] status;
+    private IMapView mapView;
 
-    public MapUseCase(IMapRepository mapRepository)
+    public MapUseCase(IMapRepository mapRepository, IMapView mapView)
     {
         this.mapRepository = mapRepository;
+        this.mapView = mapView;
     }
 
     public bool Load(int mapId)
     {
-        status = mapRepository.Load(mapId).Select(x => (GameDefine.State) x).ToArray();
-        return status != null;
+        return mapRepository.Load(mapId);
+    }
+
+    public void Draw()
+    {
+        mapView.Draw(mapRepository.Status);
     }
         
     /// <summary>
@@ -34,9 +39,9 @@ public class MapUseCase
     public List<int> GetStatePositions(GameDefine.State state)
     {
         var ret = new List<int>();
-        for (int i = 0; i < status.Length; i++)
+        for (int i = 0; i < mapRepository.Status.Length; i++)
         {
-            if (status[i] == state)
+            if (mapRepository.Status[i] == state)
             {
                 ret.Add(i);
             }
@@ -57,9 +62,9 @@ public class MapUseCase
     /// <returns></returns>
     public int GetStatePosition(GameDefine.State state)
     {
-        for (int i = 0; i < status.Length; i++)
+        for (int i = 0; i < mapRepository.Status.Length; i++)
         {
-            if (status[i] == state)
+            if (mapRepository.Status[i] == state)
             {
                 return i;
             }
@@ -77,7 +82,7 @@ public class MapUseCase
     /// <param name="state"></param>
     public void UpdateStatus(int nowPosition, int nextPosition, GameDefine.State state)
     {
-        status[nowPosition] = GameDefine.State.None;
-        status[nextPosition] = state;
+        mapRepository.Status[nowPosition] = GameDefine.State.None;
+        mapRepository.Status[nextPosition] = state;
     }
 }
