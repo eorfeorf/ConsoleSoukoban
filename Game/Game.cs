@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Souko.Game.Data.Map;
 using Souko.Game.Domain;
 using Souko.Game.Domain.Map;
-using static Souko.GameDefine;
+using Souko.Game.Domain.UseCase;
+using Souko.Game.Presentation.Input;
+using Souko.Game.UI.Input;
+using static Souko.Game.Domain.GameDefine;
 
 namespace Souko.Game
 {
@@ -14,16 +18,16 @@ namespace Souko.Game
         // 初期値のゴールの位置
         private static List<int> goals = new List<int>();
 
-        // プレイヤーの進行方向.
-        private static Dir moveDir;
-
+        // UseCase.
         private static MapUseCase mapUseCase;
+        private static InputUseCase inputUseCase;
         
         // エントリポイント.
         static void Main(string[] args)
         {
             // Resolve.
             mapUseCase = new MapUseCase(new MapRepository(new MapDataStore()));
+            inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
             
             var fail = Initialize(0);
             if (fail)
@@ -44,29 +48,27 @@ namespace Souko.Game
                 {
                     break;
                 }
-
-                // 入力.
-                var key = GetKey();
                 
+                // 入力更新.
+                inputUseCase.UpdateInput();
+
                 // リセット.
-                if (key == ConsoleKey.R)
+                if (inputUseCase.GetReset())
                 {
                     Initialize(0);
                 }
                 
                 // プレイヤー移動.
-                if (KeyToDirTable.ContainsKey(key))
+                var dir = inputUseCase.GetDir();
+                if (dir != Dir.None)
                 {
-                    // 移動方向.
-                    moveDir = KeyToDirTable[key];
-                    
                     // 不正移動先判定.
-                    var nextPosition = GetPlayerNextPosition(moveDir);
-                    bool isValidState = CheckValidState(nextPosition, DirToMoveIndex[(int)moveDir]);
+                    var nextPosition = GetPlayerNextPosition(dir);
+                    bool isValidState = CheckValidState(nextPosition, DirToMoveIndex[(int)dir]);
                     if (!isValidState) continue;
 
                     // 移動適用.
-                    ApplyNextPosition(playerPos, nextPosition, DirToMoveIndex[(int)moveDir]);
+                    ApplyNextPosition(playerPos, nextPosition, DirToMoveIndex[(int)dir]);
                 }
             }
 
@@ -122,16 +124,6 @@ namespace Souko.Game
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// 入力取得.
-        /// </summary>
-        /// <returns></returns>
-        private static ConsoleKey GetKey()
-        {
-            Console.Write("\n");
-            return Console.ReadKey().Key;
         }
 
         /// <summary>

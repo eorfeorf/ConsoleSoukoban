@@ -48,9 +48,15 @@
     <Compile Include="Game\Data\Map\MapDataStore.cs" />
     <Compile Include="Game\Data\Map\MapRepository.cs" />
     <Compile Include="Game\Domain\GameDefine.cs" />
+    <Compile Include="Game\Domain\Input\IInputController.cs" />
+    <Compile Include="Game\Domain\Input\InputData.cs" />
     <Compile Include="Game\Domain\Map\IMapRepository.cs" />
     <Compile Include="Game\Domain\UseCase\MapUseCase.cs" />
+    <Compile Include="Game\Domain\UseCase\InputUseCase.cs" />
     <Compile Include="Game\Game.cs" />
+    <Compile Include="Game\Presentation\Input\IInputDevice.cs" />
+    <Compile Include="Game\Presentation\Input\InputController.cs" />
+    <Compile Include="Game\UI\Input\InputKeyboard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Game\Entity" />
-    <Folder Include="Game\Presentation\View" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
