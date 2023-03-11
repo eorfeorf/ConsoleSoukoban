@@ -13,8 +13,7 @@ namespace Souko.Game.Domain
         public GameDefine.State[] Status => status;
         
         private IMapRepository mapRepository;
-
-        private static GameDefine.State[] status;
+        private GameDefine.State[] status;
 
         public MapUseCase(IMapRepository mapRepository)
         {
