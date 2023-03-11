@@ -40,14 +40,4 @@ public static class GameDefine
         MapLength,
         -1,
     };
-
-    // タイプによるアイコンテーブル.
-    public static readonly string[] StateToIconTable =
-    {
-        "　",
-        "壁",
-        "石",
-        "〇",
-        "ロ",
-    };
 }

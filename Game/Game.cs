@@ -5,7 +5,9 @@ using Souko.Game.Domain;
 using Souko.Game.Domain.Map;
 using Souko.Game.Domain.UseCase;
 using Souko.Game.Presentation.Input;
+using Souko.Game.Presentation.View;
 using Souko.Game.UI.Input;
+using Souko.Game.UI.View;
 using static Souko.Game.Domain.GameDefine;
 
 namespace Souko.Game
@@ -26,9 +28,12 @@ namespace Souko.Game
         static void Main(string[] args)
         {
             // Resolve.
-            mapUseCase = new MapUseCase(new MapRepository(new MapDataStore()));
+            mapUseCase = new MapUseCase(
+                new MapRepository(new MapDataStore()),
+                new MapView(new CliMapDrawer(new CliDrawer())));
             inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
             
+            // 初期化.
             var fail = Initialize(0);
             if (fail)
             {
@@ -41,7 +46,7 @@ namespace Souko.Game
             while (true)
             {
                 CursorReset();
-                DrawMap(mapUseCase.Status);
+                mapUseCase.Draw();
 
                 // ゴール判定.
                 if (IsGameEnd())
@@ -204,24 +209,6 @@ namespace Souko.Game
         {
             //Console.Write(dir);
             return playerPos + DirToMoveIndex[(int) dir];
-        }
-
-        /// <summary>
-        /// マップ描画.
-        /// </summary>
-        /// <param name="status"></param>
-        private static void DrawMap(State[] status)
-        {
-            for (int i = 0; i < status.Length; ++i)
-            {
-                if (i % MapLength == 0)
-                {
-                    Console.Write("\n");
-                }
-
-                var s = StateToIconTable[(int) status[i]];
-                Console.Write(s);
-            }
         }
 
         /// <summary>
