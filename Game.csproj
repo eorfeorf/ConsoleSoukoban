@@ -52,6 +52,7 @@
     <Compile Include="Game\Domain\Input\InputData.cs" />
     <Compile Include="Game\Domain\Map\IMapRepository.cs" />
     <Compile Include="Game\Domain\Map\IMapView.cs" />
+    <Compile Include="Game\Domain\UseCase\Component\Player.cs" />
     <Compile Include="Game\Domain\UseCase\MapUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\InputUseCase.cs" />
     <Compile Include="Game\Game.cs" />

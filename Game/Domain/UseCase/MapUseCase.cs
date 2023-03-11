@@ -10,9 +10,14 @@ namespace Souko.Game.Domain.UseCase;
 public class MapUseCase
 {
     public GameDefine.State[] Status => mapRepository.Status;
+    public int OriginalPlayerPos => originalPlayerPos;
+    public List<int> OriginalGoalPos => originalGoalPos;
     
     private IMapRepository mapRepository;
     private IMapView mapView;
+
+    private int originalPlayerPos;
+    private List<int> originalGoalPos = new();
 
     public MapUseCase(IMapRepository mapRepository, IMapView mapView)
     {
@@ -22,7 +27,28 @@ public class MapUseCase
 
     public bool Load(int mapId)
     {
-        return mapRepository.Load(mapId);
+        if(!mapRepository.Load(mapId))
+        {
+            return false;
+        }
+        
+        // プレイヤー位置.
+        originalPlayerPos = GetStatePosition(mapRepository.Status, GameDefine.State.Player);
+        if (originalPlayerPos == GameDefine.InvalidIndex)
+        {
+            Console.WriteLine("マップデータにプレイヤーが見つかりませんでした。");
+            return false;
+        }
+            
+        // ゴール位置.
+        originalGoalPos = GetStatePositions(mapRepository.Status, GameDefine.State.Goal);
+        if (originalGoalPos.Count == 0)
+        {
+            Console.WriteLine("マップデータにゴールが見つかりませんでした。");
+            return false;
+        }
+        
+        return true;
     }
 
     public void Draw()
@@ -35,12 +61,12 @@ public class MapUseCase
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    public List<int> GetStatePositions(GameDefine.State state)
+    public List<int> GetStatePositions(GameDefine.State[] status, GameDefine.State state)
     {
         var ret = new List<int>();
-        for (int i = 0; i < mapRepository.Status.Length; i++)
+        for (int i = 0; i < status.Length; i++)
         {
-            if (mapRepository.Status[i] == state)
+            if (status[i] == state)
             {
                 ret.Add(i);
             }
@@ -59,11 +85,11 @@ public class MapUseCase
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    public int GetStatePosition(GameDefine.State state)
+    private int GetStatePosition(GameDefine.State[] status, GameDefine.State state)
     {
-        for (int i = 0; i < mapRepository.Status.Length; i++)
+        for (int i = 0; i < status.Length; i++)
         {
-            if (mapRepository.Status[i] == state)
+            if (status[i] == state)
             {
                 return i;
             }
@@ -83,5 +109,44 @@ public class MapUseCase
     {
         mapRepository.Status[nowPosition] = GameDefine.State.None;
         mapRepository.Status[nextPosition] = state;
+    }
+    
+    /// <summary>
+    /// 移動先が正常な状態か.
+    /// </summary>
+    /// <param name="nextPosition"></param>
+    /// <param name="moveValue"></param>
+    /// <returns></returns>
+    public bool CheckValidState(int nextPosition, int moveValue)
+    {
+        // マップ外.
+        var isValidMapRange = 0 <= nextPosition && nextPosition < mapRepository.Status.Length;
+        if (!isValidMapRange)
+        {
+            return false;
+        }
+
+        // 移動先が有効な状態か.
+        var state = mapRepository.Status[nextPosition];
+            
+        // 壁.
+        if (state == GameDefine.State.Wall)
+        {
+            return false;
+        }
+            
+        // 石.
+        if (state == GameDefine.State.Stone)
+        {
+            // 石の先が移動できるか.
+            var nextPosition2Ahead = nextPosition + moveValue;
+            var state2 = mapRepository.Status[nextPosition2Ahead];
+            if (state2 == GameDefine.State.Wall || state2 == GameDefine.State.Stone)
+            {
+                return false;
+            }
+        }
+            
+        return true;
     }
 }

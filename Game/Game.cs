@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Souko.Game.Data.Map;
 using Souko.Game.Domain.UseCase;
+using Souko.Game.Domain.UseCase.Component;
 using Souko.Game.Presentation.Input;
 using Souko.Game.Presentation.View;
 using Souko.Game.UI.Input;
@@ -12,8 +13,6 @@ namespace Souko.Game
 {
     internal static class Game
     {
-        // 現在地のプレイヤーの位置.
-        private static int playerPos;
 
         // 初期値のゴールの位置
         private static List<int> goals = new List<int>();
@@ -21,6 +20,9 @@ namespace Souko.Game
         // UseCase.
         private static MapUseCase mapUseCase;
         private static InputUseCase inputUseCase;
+        
+        // Component.
+        private static Player player = new();
         
         // エントリポイント.
         static void Main(string[] args)
@@ -31,7 +33,6 @@ namespace Souko.Game
             var fail = Initialize(0);
             if (fail)
             {
-                Console.WriteLine("不正データの発見.");
                 Console.ReadKey();
                 return;
             }
@@ -61,12 +62,12 @@ namespace Souko.Game
                 if (dir != Dir.None)
                 {
                     // 不正移動先判定.
-                    var nextPosition = GetPlayerNextPosition(dir);
-                    bool isValidState = CheckValidState(nextPosition, DirToMoveIndex[(int)dir]);
+                    var nextPosition = player.GetNextPosition(dir);
+                    bool isValidState = mapUseCase.CheckValidState(nextPosition, DirToMoveIndex[(int)dir]);
                     if (!isValidState) continue;
 
                     // 移動適用.
-                    ApplyNextPosition(playerPos, nextPosition, DirToMoveIndex[(int)dir]);
+                    ApplyNextPosition(player.Pos, nextPosition, DirToMoveIndex[(int)dir]);
                 }
             }
 
@@ -114,24 +115,12 @@ namespace Souko.Game
             // マップ読み込み.
             if (!mapUseCase.Load(mapId))
             {
-                Console.WriteLine("マップデータが存在しません。");
-            }
-            
-            // プレイヤー位置.
-            playerPos = mapUseCase.GetStatePosition(State.Player);
-            if (playerPos == InvalidIndex)
-            {
-                Console.WriteLine("マップデータにプレイヤーが見つかりませんでした。");
+                Console.WriteLine("マップデータが不正でした。");
                 return true;
             }
-            
-            // ゴール位置.
-            goals = mapUseCase.GetStatePositions(State.Goal);
-            if (goals.Count == 0)
-            {
-                Console.WriteLine("マップデータにゴールが見つかりませんでした。");
-                return true;
-            }
+
+            player.Pos = mapUseCase.OriginalPlayerPos;
+            goals = mapUseCase.OriginalGoalPos;
 
             return false;
         }
@@ -153,7 +142,7 @@ namespace Souko.Game
 
             // プレイヤーの位置を更新.
             mapUseCase.UpdateStatus(nowPosition, nextPosition, State.Player);
-            playerPos = nextPosition;
+            player.Pos = nextPosition;
 
             // ゴールの位置を復活
             // Noneということはそのマスには誰もいない.
@@ -164,56 +153,6 @@ namespace Souko.Game
                     mapUseCase.UpdateStatus(g, g, State.Goal);
                 }
             }
-        }
-        
-        /// <summary>
-        /// 移動先が正常な状態か.
-        /// </summary>
-        /// <param name="nextPosition"></param>
-        /// <param name="moveValue"></param>
-        /// <returns></returns>
-        private static bool CheckValidState(int nextPosition, int moveValue)
-        {
-            // マップ外.
-            var isValidMapRange = 0 <= nextPosition && nextPosition < mapUseCase.Status.Length;
-            if (!isValidMapRange)
-            {
-                return false;
-            }
-
-            // 移動先が有効な状態か.
-            var state = mapUseCase.Status[nextPosition];
-            
-            // 壁.
-            if (state == State.Wall)
-            {
-                return false;
-            }
-            
-            // 石.
-            if (state == State.Stone)
-            {
-                // 石の先が移動できるか.
-                var nextPosition2Ahead = nextPosition + moveValue;
-                var state2 = mapUseCase.Status[nextPosition2Ahead];
-                if (state2 == State.Wall || state2 == State.Stone)
-                {
-                    return false;
-                }
-            }
-            
-            return true;
-        }
-
-        /// <summary>
-        /// プレイヤーの移動先座標を取得.
-        /// </summary>
-        /// <param name="dir"></param>
-        /// <returns></returns>
-        private static int GetPlayerNextPosition(Dir dir)
-        {
-            //Console.Write(dir);
-            return playerPos + DirToMoveIndex[(int) dir];
         }
     }
 }
