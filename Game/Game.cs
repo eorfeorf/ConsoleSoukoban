@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Souko.Game.Data.Map;
+using Souko.Game.Domain;
 using Souko.Game.Domain.UseCase;
 using Souko.Game.Domain.UseCase.Component;
 using Souko.Game.Presentation.Input;
@@ -13,16 +14,14 @@ namespace Souko.Game
 {
     internal static class Game
     {
-
-        // 初期値のゴールの位置
-        private static List<int> goals = new List<int>();
-
         // UseCase.
         private static MapUseCase mapUseCase;
         private static InputUseCase inputUseCase;
+        private static PlayerUseCase playerUseCase;
+        private static InGameFlowUseCase inGameFlowUseCase;
         
-        // Component.
-        private static Player player = new();
+        // 初期値のゴールの位置
+        private static List<Vector2Int> goals = new();
         
         // エントリポイント.
         static void Main(string[] args)
@@ -43,7 +42,7 @@ namespace Souko.Game
                 mapUseCase.Draw();
 
                 // ゴール判定.
-                if (IsGameEnd())
+                if (inGameFlowUseCase.IsGameEnd(goals))
                 {
                     break;
                 }
@@ -62,12 +61,12 @@ namespace Souko.Game
                 if (dir != Dir.None)
                 {
                     // 不正移動先判定.
-                    var nextPosition = player.GetNextPosition(dir);
+                    var nextPosition = playerUseCase.GetNextPosition(dir);
                     bool isValidState = mapUseCase.CheckValidState(nextPosition, DirToMoveIndex[(int)dir]);
                     if (!isValidState) continue;
 
                     // 移動適用.
-                    ApplyNextPosition(player.Pos, nextPosition, DirToMoveIndex[(int)dir]);
+                    ApplyNextPosition(playerUseCase.Pos, nextPosition, DirToMoveIndex[(int)dir]);
                 }
             }
 
@@ -85,65 +84,50 @@ namespace Souko.Game
                 )
             );
             inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
+            playerUseCase = new PlayerUseCase();
+            inGameFlowUseCase = new InGameFlowUseCase(mapUseCase);
         }
-
-        /// <summary>
-        /// 終了判定.
-        /// </summary>
-        /// <returns></returns>
-        private static bool IsGameEnd()
-        {
-            foreach (var g in goals)
-            {
-                var nowState = mapUseCase.Status[g];
-                if (nowState != State.Stone)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
+        
         /// <summary>
         /// 初期化。マップ読み込み等.
         /// </summary>
         /// <param name="mapId"></param>
         /// <returns>false:正常 true:異常</returns>
-        private static bool Initialize(int mapId)
+        public static bool Initialize(int mapId)
         {
             // マップ読み込み.
-            if (!mapUseCase.Load(mapId))
+            if (!mapUseCase.Load(mapId, out var originalPositionData))
             {
                 Console.WriteLine("マップデータが不正でした。");
                 return true;
             }
 
-            player.Pos = mapUseCase.OriginalPlayerPos;
-            goals = mapUseCase.OriginalGoalPos;
-
+            playerUseCase.Pos = originalPositionData.player;
+            goals = originalPositionData.goals;
             return false;
         }
-
+        
         /// <summary>
         /// 移動を適用.
         /// </summary>
         /// <param name="nowPosition"></param>
         /// <param name="nextPosition"></param>
         /// <param name="dir"></param>
-        private static void ApplyNextPosition(int nowPosition, int nextPosition, int moveValue)
+        private static void ApplyNextPosition(Vector2Int nowPosition, Vector2Int nextPosition, Vector2Int moveValue)
         {
-            // 石の位置を更新.
-            if (mapUseCase.Status[nextPosition] == State.Stone)
+            #if false
+            for (var i = 2; i > 0; --i)
             {
-                var nextPosition2Ahead = nextPosition + moveValue;
-                mapUseCase.UpdateStatus(nextPosition, nextPosition2Ahead, State.Stone);
+                var nowPos = nowPosition + moveValue * (i - 1);
+                var nextPos = nowPosition + moveValue * i;
+
+                if (mapUseCase.Status[nextPos] != State.Wall &&
+                    mapUseCase.Status[nextPos] != State.Stone)
+                {
+                    mapUseCase.UpdateStatus(nowPos, nextPos, mapUseCase.Status[nowPos]);
+                }
             }
-
-            // プレイヤーの位置を更新.
-            mapUseCase.UpdateStatus(nowPosition, nextPosition, State.Player);
-            player.Pos = nextPosition;
-
+            
             // ゴールの位置を復活
             // Noneということはそのマスには誰もいない.
             foreach (var g in goals)
@@ -153,6 +137,30 @@ namespace Souko.Game
                     mapUseCase.UpdateStatus(g, g, State.Goal);
                 }
             }
+
+            #else
+
+            // 石の位置を更新.
+            if (mapUseCase.Status[nextPosition] == State.Stone)
+            {
+                var nextPosition2Ahead = nextPosition + moveValue;
+                mapUseCase.UpdateStatus(nextPosition, nextPosition2Ahead, State.Stone);
+            }
+
+            // プレイヤーの位置を更新.
+            mapUseCase.UpdateStatus(nowPosition, nextPosition, State.Player);
+            playerUseCase.Pos = nextPosition;
+
+            // ゴールの位置を復活
+            // Noneということはそのマスには誰もいない.
+            foreach (var g in goals)
+            {
+                if (mapUseCase.Status[g] == GameDefine.State.None)
+                {
+                    mapUseCase.UpdateStatus(g, g, GameDefine.State.Goal);
+                }
+            }
+            #endif
         }
     }
 }
