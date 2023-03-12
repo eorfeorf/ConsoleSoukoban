@@ -92,6 +92,7 @@ public class MapUseCase
     /// </summary>
     /// <param name="nextPosition"></param>
     /// <param name="moveValue"></param>
+    /// TODO:移動判定を別のUseCaseにした方がいいかも.
     /// <returns></returns>
     public bool CheckValidState(Vector2Int nextPosition, Vector2Int moveValue)
     {

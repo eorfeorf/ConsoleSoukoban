@@ -8,7 +8,7 @@ public class MapDataStore : IMapDataStore
     public MapData Load(int mapId)
     {
         // TODO:外部データとして読み込み.
-        // MapLoader作ったほうがいいかも・・・.
+        // TODO:MapLoader作ったほうがいいかも・・・.
         var data = new[]
         {
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
