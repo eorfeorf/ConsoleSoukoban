@@ -51,11 +51,14 @@
     <Compile Include="Game\Domain\Input\InputData.cs" />
     <Compile Include="Game\Domain\Map\IMapRepository.cs" />
     <Compile Include="Game\Domain\Map\IMapView.cs" />
+    <Compile Include="Game\Domain\System\ILogger.cs" />
     <Compile Include="Game\Domain\UseCase\Component\IntExtension.cs" />
     <Compile Include="Game\Domain\UseCase\Component\MapStatus.cs" />
     <Compile Include="Game\Domain\UseCase\Component\OriginalPositionData.cs" />
     <Compile Include="Game\Domain\UseCase\Component\Vector2Int.cs" />
     <Compile Include="Game\Domain\UseCase\GameFlowUseCase.cs" />
+    <Compile Include="Game\Domain\UseCase\InGameFrameworkUseCase.cs" />
+    <Compile Include="Game\Domain\UseCase\LoggerUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\MapUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\InputUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\PlayerUseCase.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Game\Presentation\View\IMapViewSetupper.cs" />
     <Compile Include="Game\Presentation\View\MapView.cs" />
     <Compile Include="Game\UI\Input\InputKeyboard.cs" />
+    <Compile Include="Game\UI\System\CliLogger.cs" />
     <Compile Include="Game\UI\View\CliDrawer.cs" />
     <Compile Include="Game\UI\View\CliMapDrawer.cs" />
     <Compile Include="Game\UI\View\CliMapViewSetupper.cs" />
@@ -75,9 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Game\Entity" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

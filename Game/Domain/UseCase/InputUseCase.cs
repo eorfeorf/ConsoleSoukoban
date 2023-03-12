@@ -4,12 +4,14 @@ namespace Souko.Game.Domain.UseCase;
 
 public class InputUseCase
 {
+    private LoggerUseCase _loggerUseCase;
     private IInputController inputController;
 
     private InputData inputData;
     
-    public InputUseCase(IInputController inputController)
+    public InputUseCase(LoggerUseCase loggerUseCase, IInputController inputController)
     {
+        _loggerUseCase = loggerUseCase;
         this.inputController = inputController;
     }
 

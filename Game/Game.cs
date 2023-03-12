@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using Souko.Game.Data.Map;
-using Souko.Game.Domain;
 using Souko.Game.Domain.UseCase;
 using Souko.Game.Domain.UseCase.Component;
 using Souko.Game.Presentation.Input;
 using Souko.Game.Presentation.View;
 using Souko.Game.UI.Input;
+using Souko.Game.UI.System;
 using Souko.Game.UI.View;
-using static Souko.Game.Domain.GameDefine;
 
 namespace Souko.Game
 {
@@ -19,6 +17,8 @@ namespace Souko.Game
         private static InputUseCase inputUseCase;
         private static PlayerUseCase playerUseCase;
         private static GameFlowUseCase gameFlowUseCase;
+        private static LoggerUseCase loggerUseCase;
+        private static InGameFrameworkUseCase inGameFrameworkUseCase;
         
         // エントリポイント.
         static void Main(string[] args)
@@ -26,82 +26,39 @@ namespace Souko.Game
             DependencyResolve();
             
             // 初期化.
-            var fail = Initialize(0);
-            if (fail)
+            var success = inGameFrameworkUseCase.Initialize(0);
+            if (!success)
             {
-                Console.ReadKey();
+                loggerUseCase.Log("初期化の失敗しました。=\n");
                 return;
             }
             
             // メインループ.
-            while (true)
+            while (inGameFrameworkUseCase.IsEnd())
             {
-                mapUseCase.Draw();
-
-                // ゴール判定.
-                if (gameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos))
-                {
-                    break;
-                }
-                
-                // 入力更新.
-                inputUseCase.UpdateInput();
-
-                // リセット.
-                if (inputUseCase.GetReset())
-                {
-                    Initialize(0);
-                }
-                
-                // プレイヤー移動.
-                var dir = inputUseCase.GetDir();
-                if (dir != Dir.None)
-                {
-                    // 不正移動先判定.
-                    var nextPosition = playerUseCase.GetNextPosition(dir);
-                    bool isValidState = mapUseCase.CheckValidState(nextPosition, DirToMoveIndex[(int)dir]);
-                    if (!isValidState) continue;
-
-                    // 移動適用.
-                    playerUseCase.ApplyNextPosition(playerUseCase.Pos, nextPosition, DirToMoveIndex[(int)dir]);
-                }
+                inGameFrameworkUseCase.Draw();
+                inGameFrameworkUseCase.Update();
             }
 
-            Console.WriteLine("\n===おわり===\n");
+            loggerUseCase.Log("\n===おわり===\n");
             Console.ReadKey();
         }
 
         private static void DependencyResolve()
         {
+            loggerUseCase = new LoggerUseCase(new CliLogger());
             mapUseCase = new MapUseCase(
+                loggerUseCase,
                 new MapRepository(new MapDataStore()),
                 new MapView(
                     new CliMapDrawer(new CliDrawer()),
                     new CliMapViewSetupper()
                 )
             );
-            inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
-            playerUseCase = new PlayerUseCase(mapUseCase);
-            gameFlowUseCase = new GameFlowUseCase(mapUseCase);
+            inputUseCase = new InputUseCase(loggerUseCase, new InputController(new InputKeyboard()));
+            playerUseCase = new PlayerUseCase(loggerUseCase, mapUseCase);
+            gameFlowUseCase = new GameFlowUseCase(loggerUseCase, mapUseCase);
+            inGameFrameworkUseCase = new InGameFrameworkUseCase(loggerUseCase, mapUseCase, inputUseCase, playerUseCase, gameFlowUseCase);
         }
-        
-        /// <summary>
-        /// 初期化。マップ読み込み等.
-        /// </summary>
-        /// <param name="mapId"></param>
-        /// <returns>false:正常 true:異常</returns>
-        public static bool Initialize(int mapId)
-        {
-            // マップ読み込み.
-            if (!mapUseCase.Load(mapId))
-            {
-                Console.WriteLine("マップデータが不正でした。");
-                return true;
-            }
-
-            playerUseCase.Pos = mapUseCase.OriginalPlayerPos;
-            return false;
-        }
-        
     }
 }

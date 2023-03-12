@@ -15,6 +15,7 @@ public class MapView : IMapView
         this.mapViewSetupper = mapViewSetupper;
     }
 
+    //TODO:ここクソコード.
     public void Draw(MapStatus status)
     {
         mapViewSetupper.Setup();

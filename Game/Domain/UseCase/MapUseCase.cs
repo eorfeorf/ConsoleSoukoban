@@ -14,13 +14,15 @@ public class MapUseCase
     public Vector2Int OriginalPlayerPos => originalPlayerPos;
     public IList<Vector2Int> OriginalGoalPos => _originalOriginalGoalPoPos;
 
+    private LoggerUseCase _loggerUseCase;
     private IMapRepository mapRepository;
     private IMapView mapView;
     private Vector2Int originalPlayerPos;
     private List<Vector2Int> _originalOriginalGoalPoPos = new();
 
-    public MapUseCase(IMapRepository mapRepository, IMapView mapView)
+    public MapUseCase(LoggerUseCase loggerUseCase, IMapRepository mapRepository, IMapView mapView)
     {
+        _loggerUseCase = loggerUseCase;
         this.mapRepository = mapRepository;
         this.mapView = mapView;
     }
@@ -36,7 +38,7 @@ public class MapUseCase
         originalPlayerPos = GetStatePosition(mapRepository.Status, GameDefine.State.Player);
         if (originalPlayerPos == GameDefine.InvalidPos)
         {
-            Console.WriteLine("マップデータにプレイヤーが見つかりませんでした。");
+            _loggerUseCase.Log("マップデータにプレイヤーが見つかりませんでした。\n");
             return false;
         }
             
@@ -44,7 +46,7 @@ public class MapUseCase
         _originalOriginalGoalPoPos = GetStatePositions(mapRepository.Status, GameDefine.State.Goal);
         if (_originalOriginalGoalPoPos.Count == 0)
         {
-            Console.WriteLine("マップデータにゴールが見つかりませんでした。");
+            _loggerUseCase.Log("マップデータにゴールが見つかりませんでした。\n");
             return false;
         }
 
@@ -74,7 +76,7 @@ public class MapUseCase
 
         if(ret.Count == 0)
         {
-            Console.WriteLine($"指定した状態がマップ上に存在しません.\nstate:{state}");
+            _loggerUseCase.Log($"指定した状態がマップ上に存在しません. state:{state}\n");
         }
             
         return ret;
@@ -95,7 +97,7 @@ public class MapUseCase
             }
         }
 
-        Console.WriteLine($"指定した状態がマップ上に存在しません.\nstate:{state}");
+        _loggerUseCase.Log($"指定した状態がマップ上に存在しません. state:{state}\n");
         return GameDefine.InvalidPos;
     }
 
