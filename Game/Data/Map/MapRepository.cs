@@ -6,10 +6,14 @@ using Souko.Game.Domain.UseCase.Component;
 namespace Souko.Game.Data.Map;
 
 /// <summary>
-/// マップ
+/// マップデータの保持.
 /// </summary>
 public class MapRepository : IMapRepository
 {
+    /// <summary>
+    /// マップデータのインスタンス.
+    /// これがマップの状態.
+    /// </summary>
     public MapStatus Status => _status;
     private MapStatus _status;
     
@@ -20,6 +24,11 @@ public class MapRepository : IMapRepository
         _mapDataStore = mapDataStore;
     }
 
+    /// <summary>
+    /// 用意されたマップデータのシリアライズ、インスタンス化.
+    /// </summary>
+    /// <param name="mapId"></param>
+    /// <returns></returns>
     public bool Load(int mapId)
     {
         _status = new MapStatus(_mapDataStore.Load(mapId).Select(x => (GameDefine.State)x).ToArray(), GameDefine.MapLength);

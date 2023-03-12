@@ -5,12 +5,21 @@ using Souko.Game.Domain.UseCase.Component;
 namespace Souko.Game.Domain.UseCase;
 
 /// <summary>
-/// マップの制御を行う.
+/// マップの制御するユースケース.
 /// </summary>
 public class MapUseCase
 {
+    /// <summary>
+    /// マップの状態.
+    /// </summary>
     public MapStatus Status => _mapRepository.Status;
+    /// <summary>
+    /// プレイヤーの初期値.
+    /// </summary>
     public Vector2Int OriginalPlayerPos => _originalPlayerPos;
+    /// <summary>
+    /// ゴールの初期値.
+    /// </summary>
     public IList<Vector2Int> OriginalGoalPos => _originalOriginalGoalPoPos;
 
     private readonly LoggerUseCase _loggerUseCase;
@@ -27,6 +36,11 @@ public class MapUseCase
         _mapView = mapView;
     }
 
+    /// <summary>
+    /// マップ読み込み.
+    /// </summary>
+    /// <param name="mapId"></param>
+    /// <returns></returns>
     public bool Load(int mapId)
     {
         if(!_mapRepository.Load(mapId))
@@ -53,14 +67,16 @@ public class MapUseCase
         return true;
     }
 
+    /// <summary>
+    /// マップ描画.
+    /// </summary>
     public void Draw()
     {
-        _mapView.DrawSetup();
         _mapView.Draw(_mapRepository.Status);
     }
 
     /// <summary>
-    /// 状態を更新.
+    /// マップ状態を更新.
     /// </summary>
     /// <param name="nowPosition"></param>
     /// <param name="nextPosition"></param>
@@ -110,16 +126,17 @@ public class MapUseCase
             
         return true;
     }
-    
+
     /// <summary>
     /// ある状態の座標を取得.
     /// </summary>
+    /// <param name="status"></param>
     /// <param name="state"></param>
     /// <returns></returns>
     private List<Vector2Int> GetStatePositions(MapStatus status, GameDefine.State state)
     {
         var ret = new List<Vector2Int>();
-        for (int i = 0; i < status.Length; i++)
+        for (int i = 0; i < status.Width; i++)
         {
             if (status[i] == state)
             {
@@ -134,15 +151,16 @@ public class MapUseCase
             
         return ret;
     }
-        
+
     /// <summary>
     /// ある状態の座標を取得.
     /// </summary>
+    /// <param name="status"></param>
     /// <param name="state"></param>
     /// <returns></returns>
     private Vector2Int GetStatePosition(MapStatus status, GameDefine.State state)
     {
-        for (int i = 0; i < status.Length; i++)
+        for (int i = 0; i < status.Width; i++)
         {
             if (status[i] == state)
             {

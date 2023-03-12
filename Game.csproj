@@ -55,7 +55,6 @@
     <Compile Include="Game\Domain\UseCase\Component\IntExtension.cs" />
     <Compile Include="Game\Domain\UseCase\Component\MapStatus.cs" />
     <Compile Include="Game\Domain\UseCase\Component\Vector2Int.cs" />
-    <Compile Include="Game\Domain\UseCase\GameFlowUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\InGameFrameworkUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\LoggerUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\MapUseCase.cs" />
@@ -64,12 +63,12 @@
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameDefine.cs" />
     <Compile Include="Game\Presentation\Input\IInputDevice.cs" />
-    <Compile Include="Game\Presentation\Input\CliInputController.cs" />
-    <Compile Include="Game\Presentation\View\IDrawer.cs" />
-    <Compile Include="Game\Presentation\View\CliMapView.cs" />
+    <Compile Include="Game\Presentation\Input\Keyboard\InputControllerKeyboard.cs" />
+    <Compile Include="Game\Presentation\Input\Keyboard\InputControllerKeyboardMapper.cs" />
+    <Compile Include="Game\Presentation\View\MapViewCLI.cs" />
+    <Compile Include="Game\Presentation\View\MapViewCLIMapper.cs" />
     <Compile Include="Game\UI\Input\InputKeyboard.cs" />
-    <Compile Include="Game\UI\System\CliLogger.cs" />
-    <Compile Include="Game\UI\View\CliDrawer.cs" />
+    <Compile Include="Game\UI\System\LoggerConsole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

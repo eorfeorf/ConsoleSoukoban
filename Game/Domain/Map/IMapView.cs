@@ -2,8 +2,10 @@
 
 namespace Souko.Game.Domain.Map;
 
+/// <summary>
+/// マップの描画を吸収するインターフェイス.
+/// </summary>
 public interface IMapView
 {
-    public void DrawSetup();
     public void Draw(MapStatus status);
 }

@@ -2,6 +2,9 @@
 
 namespace Souko.Game.Domain.UseCase;
 
+/// <summary>
+/// ログ出力を制御するユースケース.
+/// </summary>
 public class LoggerUseCase
 {
     private readonly ILogger _logger;
@@ -11,6 +14,10 @@ public class LoggerUseCase
         _logger = logger;
     }
 
+    /// <summary>
+    /// 出力.
+    /// </summary>
+    /// <param name="message"></param>
     public void Log(string message)
     {
         _logger.Log(message);

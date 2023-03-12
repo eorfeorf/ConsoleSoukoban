@@ -1,23 +1,24 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Domain.UseCase;
 
+/// <summary>
+/// インゲーム全体を制御するユースケース.
+/// </summary>
 public class InGameFrameworkUseCase
 {
     private readonly LoggerUseCase _loggerUseCase;
     private readonly MapUseCase _mapUseCase;
     private readonly InputUseCase _inputUseCase;
     private readonly PlayerUseCase _playerUseCase;
-    private readonly GameFlowUseCase _gameFlowUseCase;
     
-    public InGameFrameworkUseCase(LoggerUseCase loggerUseCase, MapUseCase mapUseCase, InputUseCase inputUseCase, PlayerUseCase playerUseCase, GameFlowUseCase gameFlowUseCase)
+    public InGameFrameworkUseCase(LoggerUseCase loggerUseCase, MapUseCase mapUseCase, InputUseCase inputUseCase, PlayerUseCase playerUseCase)
     {
         _loggerUseCase = loggerUseCase;
         _mapUseCase = mapUseCase;
         _inputUseCase = inputUseCase;
         _playerUseCase = playerUseCase;
-        _gameFlowUseCase = gameFlowUseCase;
     }
 
     /// <summary>
@@ -44,7 +45,8 @@ public class InGameFrameworkUseCase
     /// <returns>ゲームが終了したか</returns>
     public bool Update()
     {
-        if (_gameFlowUseCase.IsGameEnd(_mapUseCase.OriginalGoalPos))
+        // 終了したか？
+        if (IsGameEnd(_mapUseCase.OriginalGoalPos))
         {
             return true;
         }
@@ -83,5 +85,23 @@ public class InGameFrameworkUseCase
     public void Draw()
     {
         _mapUseCase.Draw();
+    }
+    
+    /// <summary>
+    /// 終了判定.
+    /// </summary>
+    /// <returns></returns>
+    private bool IsGameEnd(IList<Vector2Int> goals)
+    {
+        foreach (var g in goals)
+        {
+            var nowState = _mapUseCase.Status[g];
+            if (nowState != GameDefine.State.Stone)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

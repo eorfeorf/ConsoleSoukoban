@@ -3,7 +3,10 @@ using Souko.Game.Domain.System;
 
 namespace Souko.Game.UI.System;
 
-public class CliLogger : ILogger
+/// <summary>
+/// コンソールアプリケーションでログ出力を行うクラス.
+/// </summary>
+public class LoggerConsole : ILogger
 {
     public void Log(string message)
     {

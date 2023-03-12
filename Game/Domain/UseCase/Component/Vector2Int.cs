@@ -1,5 +1,8 @@
 ﻿namespace Souko.Game.Domain.UseCase.Component;
 
+/// <summary>
+/// 座標クラス.
+/// </summary>
 public struct Vector2Int
 {
     public int x;

@@ -1,8 +1,13 @@
 namespace Souko.Game.Domain.UseCase.Component;
 
+/// <summary>
+/// プレイヤーを制御するユースケース.
+/// </summary>
 public class PlayerUseCase
 {
-    // 現在地のプレイヤーの位置.
+    /// <summary>
+    /// 現在地のプレイヤーの位置.
+    /// </summary>
     public Vector2Int Pos;
 
     private readonly LoggerUseCase _loggerUseCase;

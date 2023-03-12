@@ -2,11 +2,10 @@
 using Souko.Game.Data.Map;
 using Souko.Game.Domain.UseCase;
 using Souko.Game.Domain.UseCase.Component;
-using Souko.Game.Presentation.Input;
+using Souko.Game.Presentation.Input.Keyboard;
 using Souko.Game.Presentation.View;
 using Souko.Game.UI.Input;
 using Souko.Game.UI.System;
-using Souko.Game.UI.View;
 
 namespace Souko.Game
 {
@@ -16,15 +15,15 @@ namespace Souko.Game
         private static MapUseCase mapUseCase;
         private static InputUseCase inputUseCase;
         private static PlayerUseCase playerUseCase;
-        private static GameFlowUseCase gameFlowUseCase;
         private static LoggerUseCase loggerUseCase;
         private static InGameFrameworkUseCase inGameFrameworkUseCase;
-        
+
         // エントリポイント.
         static void Main(string[] args)
         {
+            // 依存解決.
             DependencyResolve();
-            
+
             // 初期化.
             var success = inGameFrameworkUseCase.Initialize(0);
             if (!success)
@@ -32,7 +31,7 @@ namespace Souko.Game
                 loggerUseCase.Log("初期化の失敗しました。=\n");
                 return;
             }
-            
+
             // メインループ.
             while (true)
             {
@@ -44,22 +43,20 @@ namespace Souko.Game
             }
 
             loggerUseCase.Log("\n===おわり===\n");
+
+            // コンソール依存なので放置.
             Console.ReadKey();
         }
 
         // 依存解決.
+        // TODO:DIContainerを使う.
         private static void DependencyResolve()
         {
-            loggerUseCase = new LoggerUseCase(new CliLogger());
-            mapUseCase = new MapUseCase(
-                loggerUseCase,
-                new MapRepository(new MapDataStore()),
-                new CliMapView(new CliDrawer())
-            );
-            inputUseCase = new InputUseCase(loggerUseCase, new CliInputController(new InputKeyboard()));
+            loggerUseCase = new LoggerUseCase(new LoggerConsole());
+            mapUseCase = new MapUseCase(loggerUseCase, new MapRepository(new MapDataStore()), new MapViewCLI(new MapViewCLIMapper()));
+            inputUseCase = new InputUseCase(loggerUseCase, new InputControllerKeyboard(new InputKeyboard(), new InputControllerKeyboardMapper()));
             playerUseCase = new PlayerUseCase(loggerUseCase, mapUseCase);
-            gameFlowUseCase = new GameFlowUseCase(loggerUseCase, mapUseCase);
-            inGameFrameworkUseCase = new InGameFrameworkUseCase(loggerUseCase, mapUseCase, inputUseCase, playerUseCase, gameFlowUseCase);
+            inGameFrameworkUseCase = new InGameFrameworkUseCase(loggerUseCase, mapUseCase, inputUseCase, playerUseCase);
         }
     }
 }

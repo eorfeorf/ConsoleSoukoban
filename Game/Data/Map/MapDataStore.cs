@@ -1,9 +1,13 @@
 ﻿namespace Souko.Game.Data.Map;
 
+/// <summary>
+/// マップデータを用意するクラス.
+/// </summary>
 public class MapDataStore : IMapDataStore
 {
     public int[] Load(int mapId)
     {
+        // TODO:外部データとして読み込み.
         return new[]
         {
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
