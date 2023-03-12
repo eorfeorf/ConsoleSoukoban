@@ -34,26 +34,27 @@ namespace Souko.Game
             }
             
             // メインループ.
-            while (inGameFrameworkUseCase.IsEnd())
+            while (true)
             {
                 inGameFrameworkUseCase.Draw();
-                inGameFrameworkUseCase.Update();
+                if (inGameFrameworkUseCase.Update())
+                {
+                    break;
+                }
             }
 
             loggerUseCase.Log("\n===おわり===\n");
             Console.ReadKey();
         }
 
+        // 依存解決.
         private static void DependencyResolve()
         {
             loggerUseCase = new LoggerUseCase(new CliLogger());
             mapUseCase = new MapUseCase(
                 loggerUseCase,
                 new MapRepository(new MapDataStore()),
-                new MapView(
-                    new CliMapDrawer(new CliDrawer()),
-                    new CliMapViewSetupper()
-                )
+                new MapView(new CliDrawer())
             );
             inputUseCase = new InputUseCase(loggerUseCase, new InputController(new InputKeyboard()));
             playerUseCase = new PlayerUseCase(loggerUseCase, mapUseCase);

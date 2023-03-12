@@ -41,9 +41,14 @@ public class InGameFrameworkUseCase
     /// <summary>
     /// ゲームループ更新.
     /// </summary>
-    /// <returns></returns>
-    public void Update()
+    /// <returns>ゲームが終了したか</returns>
+    public bool Update()
     {
+        if (gameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos))
+        {
+            return true;
+        }
+        
         // 入力更新.
         inputUseCase.UpdateInput();
 
@@ -62,21 +67,14 @@ public class InGameFrameworkUseCase
             bool isValidState = mapUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
             if (!isValidState)
             {
-                return;
+                return false;
             }
 
             // 移動適用.
             playerUseCase.ApplyNextPosition(playerUseCase.Pos, nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
         }
-    }
 
-    /// <summary>
-    /// ゲーム終了したか.
-    /// </summary>
-    /// <returns></returns>
-    public bool IsEnd()
-    {
-        return gameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos);
+        return false;
     }
 
     /// <summary>
