@@ -5,8 +5,8 @@ public class PlayerUseCase
     // 現在地のプレイヤーの位置.
     public Vector2Int Pos;
 
-    private LoggerUseCase _loggerUseCase;
-    private MapUseCase _mapUseCase;
+    private readonly LoggerUseCase _loggerUseCase;
+    private readonly MapUseCase _mapUseCase;
 
     public PlayerUseCase(LoggerUseCase loggerUseCase, MapUseCase mapUseCase)
     {

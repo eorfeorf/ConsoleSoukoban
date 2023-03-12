@@ -5,19 +5,19 @@ namespace Souko.Game.Domain.UseCase;
 
 public class InGameFrameworkUseCase
 {
-    private LoggerUseCase _loggerUseCase;
-    private MapUseCase mapUseCase;
-    private InputUseCase inputUseCase;
-    private PlayerUseCase playerUseCase;
-    private GameFlowUseCase gameFlowUseCase;
+    private readonly LoggerUseCase _loggerUseCase;
+    private readonly MapUseCase _mapUseCase;
+    private readonly InputUseCase _inputUseCase;
+    private readonly PlayerUseCase _playerUseCase;
+    private readonly GameFlowUseCase _gameFlowUseCase;
     
     public InGameFrameworkUseCase(LoggerUseCase loggerUseCase, MapUseCase mapUseCase, InputUseCase inputUseCase, PlayerUseCase playerUseCase, GameFlowUseCase gameFlowUseCase)
     {
         _loggerUseCase = loggerUseCase;
-        this.mapUseCase = mapUseCase;
-        this.inputUseCase = inputUseCase;
-        this.playerUseCase = playerUseCase;
-        this.gameFlowUseCase = gameFlowUseCase;
+        _mapUseCase = mapUseCase;
+        _inputUseCase = inputUseCase;
+        _playerUseCase = playerUseCase;
+        _gameFlowUseCase = gameFlowUseCase;
     }
 
     /// <summary>
@@ -28,13 +28,13 @@ public class InGameFrameworkUseCase
     public bool Initialize(int mapId)
     {
         // マップ読み込み.
-        if (!mapUseCase.Load(mapId))
+        if (!_mapUseCase.Load(mapId))
         {
             _loggerUseCase.Log("マップデータが不正でした。\n");
             return false;
         }
 
-        playerUseCase.Pos = mapUseCase.OriginalPlayerPos;
+        _playerUseCase.Pos = _mapUseCase.OriginalPlayerPos;
         return true;
     }
     
@@ -44,34 +44,34 @@ public class InGameFrameworkUseCase
     /// <returns>ゲームが終了したか</returns>
     public bool Update()
     {
-        if (gameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos))
+        if (_gameFlowUseCase.IsGameEnd(_mapUseCase.OriginalGoalPos))
         {
             return true;
         }
         
         // 入力更新.
-        inputUseCase.UpdateInput();
+        _inputUseCase.UpdateInput();
 
         // リセット.
-        if (inputUseCase.GetReset())
+        if (_inputUseCase.GetReset())
         {
             Initialize(0);
         }
                 
         // プレイヤー移動.
-        var dir = inputUseCase.GetDir();
+        var dir = _inputUseCase.GetDir();
         if (dir != GameDefine.Dir.None)
         {
             // 不正移動先判定.
-            var nextPosition = playerUseCase.GetNextPosition(dir);
-            bool isValidState = mapUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
+            var nextPosition = _playerUseCase.GetNextPosition(dir);
+            bool isValidState = _mapUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
             if (!isValidState)
             {
                 return false;
             }
 
             // 移動適用.
-            playerUseCase.ApplyNextPosition(playerUseCase.Pos, nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
+            _playerUseCase.ApplyNextPosition(_playerUseCase.Pos, nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
         }
 
         return false;
@@ -82,6 +82,6 @@ public class InGameFrameworkUseCase
     /// </summary>
     public void Draw()
     {
-        mapUseCase.Draw();
+        _mapUseCase.Draw();
     }
 }

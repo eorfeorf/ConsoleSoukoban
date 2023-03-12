@@ -11,7 +11,6 @@ public class InputKeyboard : IInputDevice
     /// <returns></returns>
     public ConsoleKey GetKey()
     {
-        Console.Write("\n");
         return Console.ReadKey().Key;
     }
 }

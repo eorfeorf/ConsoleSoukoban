@@ -5,7 +5,7 @@ using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Presentation.View;
 
-public class MapView : IMapView
+public class CliMapView : IMapView
 {
     private readonly IDrawer _drawer;
     
@@ -19,12 +19,11 @@ public class MapView : IMapView
         "ロ",
     };
 
-    public MapView(IDrawer drawer)
+    public CliMapView(IDrawer drawer)
     {
         _drawer = drawer;
     }
 
-    // TODO:コンソールに依存しない方法を探したい.
     public void DrawSetup()
     {
         Console.CursorLeft = 0;

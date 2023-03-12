@@ -5,8 +5,8 @@ namespace Souko.Game.Domain.UseCase;
 
 public class GameFlowUseCase
 {
-    private LoggerUseCase _loggerUseCase;
-    private MapUseCase _mapUseCase;
+    private readonly LoggerUseCase _loggerUseCase;
+    private readonly MapUseCase _mapUseCase;
     
     public GameFlowUseCase(LoggerUseCase loggerUseCase, MapUseCase mapUseCase)
     {

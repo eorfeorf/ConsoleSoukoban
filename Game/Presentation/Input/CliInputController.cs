@@ -5,7 +5,7 @@ using Souko.Game.Domain.Input;
 
 namespace Souko.Game.Presentation.Input;
 
-public class InputController : IInputController
+public class CliInputController : IInputController
 {
     private IInputDevice inputDevice;
 
@@ -22,22 +22,10 @@ public class InputController : IInputController
         {ConsoleKey.RightArrow, GameDefine.Dir.Right},
     };
     
-    public InputController(IInputDevice inputDevice)
+    public CliInputController(IInputDevice inputDevice)
     {
         this.inputDevice = inputDevice;
     }
-    
-    // public GameDefine.Dir GetDir()
-    // {
-    //     var key = inputDevice.GetKey();
-    //     return keyboardToDirTable.ContainsKey(key) ? keyboardToDirTable[key] : GameDefine.Dir.None;
-    // }
-    //
-    // public bool GetReset()
-    // {
-    //     var key = inputDevice.GetKey();
-    //     return key == ConsoleKey.R;
-    // }
 
     public InputData GetInput()
     {

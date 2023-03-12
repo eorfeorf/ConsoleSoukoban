@@ -54,9 +54,9 @@ namespace Souko.Game
             mapUseCase = new MapUseCase(
                 loggerUseCase,
                 new MapRepository(new MapDataStore()),
-                new MapView(new CliDrawer())
+                new CliMapView(new CliDrawer())
             );
-            inputUseCase = new InputUseCase(loggerUseCase, new InputController(new InputKeyboard()));
+            inputUseCase = new InputUseCase(loggerUseCase, new CliInputController(new InputKeyboard()));
             playerUseCase = new PlayerUseCase(loggerUseCase, mapUseCase);
             gameFlowUseCase = new GameFlowUseCase(loggerUseCase, mapUseCase);
             inGameFrameworkUseCase = new InGameFrameworkUseCase(loggerUseCase, mapUseCase, inputUseCase, playerUseCase, gameFlowUseCase);

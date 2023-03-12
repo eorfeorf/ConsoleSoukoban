@@ -4,7 +4,7 @@ namespace Souko.Game.Domain.UseCase;
 
 public class LoggerUseCase
 {
-    private ILogger _logger;
+    private readonly ILogger _logger;
     
     public LoggerUseCase(ILogger logger)
     {

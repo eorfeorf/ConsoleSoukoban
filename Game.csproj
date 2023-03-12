@@ -54,7 +54,6 @@
     <Compile Include="Game\Domain\System\ILogger.cs" />
     <Compile Include="Game\Domain\UseCase\Component\IntExtension.cs" />
     <Compile Include="Game\Domain\UseCase\Component\MapStatus.cs" />
-    <Compile Include="Game\Domain\UseCase\Component\OriginalPositionData.cs" />
     <Compile Include="Game\Domain\UseCase\Component\Vector2Int.cs" />
     <Compile Include="Game\Domain\UseCase\GameFlowUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\InGameFrameworkUseCase.cs" />
@@ -65,9 +64,9 @@
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\GameDefine.cs" />
     <Compile Include="Game\Presentation\Input\IInputDevice.cs" />
-    <Compile Include="Game\Presentation\Input\InputController.cs" />
+    <Compile Include="Game\Presentation\Input\CliInputController.cs" />
     <Compile Include="Game\Presentation\View\IDrawer.cs" />
-    <Compile Include="Game\Presentation\View\MapView.cs" />
+    <Compile Include="Game\Presentation\View\CliMapView.cs" />
     <Compile Include="Game\UI\Input\InputKeyboard.cs" />
     <Compile Include="Game\UI\System\CliLogger.cs" />
     <Compile Include="Game\UI\View\CliDrawer.cs" />
