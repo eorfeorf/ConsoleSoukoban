@@ -1,4 +1,5 @@
 ﻿using Souko.Game.Domain.Input;
+using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Domain.UseCase;
 

@@ -66,14 +66,14 @@ public class InGameFrameworkUseCase
         {
             // 不正移動先判定.
             var nextPosition = _playerUseCase.GetNextPosition(dir);
-            bool isValidState = _mapUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
+            bool isValidState = _mapUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveValue[dir]);
             if (!isValidState)
             {
                 return false;
             }
 
             // 移動適用.
-            _playerUseCase.ApplyNextPosition(_playerUseCase.Pos, nextPosition, GameDefine.DirToMoveIndex[(int)dir]);
+            _playerUseCase.ApplyNextPosition(_playerUseCase.Pos, nextPosition, GameDefine.DirToMoveValue[dir]);
         }
 
         return false;

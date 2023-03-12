@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Souko.Game.Domain;
 using Souko.Game.Domain.Map;
+using Souko.Game.Domain.UseCase;
 using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Data.Map;

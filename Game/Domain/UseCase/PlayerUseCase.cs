@@ -26,8 +26,7 @@ public class PlayerUseCase
     /// <returns></returns>
     public Vector2Int GetNextPosition(GameDefine.Dir dir)
     {
-        var index = (int) dir;
-        return Pos + GameDefine.DirToMoveIndex[index];
+        return Pos + GameDefine.DirToMoveValue[dir];
     }
     
     /// <summary>

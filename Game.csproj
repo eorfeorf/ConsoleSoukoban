@@ -52,6 +52,7 @@
     <Compile Include="Game\Domain\Map\IMapRepository.cs" />
     <Compile Include="Game\Domain\Map\IMapView.cs" />
     <Compile Include="Game\Domain\System\ILogger.cs" />
+    <Compile Include="Game\Domain\UseCase\Component\GameDefine.cs" />
     <Compile Include="Game\Domain\UseCase\Component\IntExtension.cs" />
     <Compile Include="Game\Domain\UseCase\Component\MapStatus.cs" />
     <Compile Include="Game\Domain\UseCase\Component\Vector2Int.cs" />
@@ -61,7 +62,6 @@
     <Compile Include="Game\Domain\UseCase\InputUseCase.cs" />
     <Compile Include="Game\Domain\UseCase\PlayerUseCase.cs" />
     <Compile Include="Game\Game.cs" />
-    <Compile Include="Game\GameDefine.cs" />
     <Compile Include="Game\Presentation\Input\IInputDevice.cs" />
     <Compile Include="Game\Presentation\Input\Keyboard\InputControllerKeyboard.cs" />
     <Compile Include="Game\Presentation\Input\Keyboard\InputControllerKeyboardMapper.cs" />

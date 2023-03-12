@@ -1,4 +1,7 @@
-﻿namespace Souko.Game.Domain.Input;
+﻿using Souko.Game.Domain.UseCase;
+using Souko.Game.Domain.UseCase.Component;
+
+namespace Souko.Game.Domain.Input;
 
 /// <summary>
 /// 入力情報を抽象化したデータ.
