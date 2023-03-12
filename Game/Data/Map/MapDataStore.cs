@@ -23,6 +23,7 @@ public class MapDataStore : IMapDataStore
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         };
         var width = 10;
-        return new(data, width);
+        
+        return new(mapId, data, width);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Souko.Game.Domain.Map;
 using Souko.Game.Domain.UseCase.Component;
 
@@ -7,7 +8,7 @@ namespace Souko.Game.Domain.UseCase;
 /// <summary>
 /// マップの制御するユースケース.
 /// </summary>
-public class MapUseCase
+public class MapUseCase : IDisposable
 {
     /// <summary>
     /// マップの状態.
@@ -26,7 +27,9 @@ public class MapUseCase
     private readonly IMapRepository _mapRepository;
     private readonly IMapView _mapView;
     
+    // プレイヤーの初期座標.
     private Vector2Int _originalPlayerPos;
+    // ゴールの初期初期座標.
     private List<Vector2Int> _originalOriginalGoalPoPos = new();
 
     public MapUseCase(LoggerUseCase loggerUseCase, IMapRepository mapRepository, IMapView mapView)
@@ -130,5 +133,10 @@ public class MapUseCase
 
         _loggerUseCase.Log($"指定した状態がマップ上に存在しません. state:{state}\n");
         return GameDefine.InvalidPos;
+    }
+
+    public void Dispose()
+    {
+        _mapRepository.Dispose();
     }
 }

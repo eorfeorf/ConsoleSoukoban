@@ -1,9 +1,12 @@
-﻿namespace Souko.Game.Domain.UseCase.Component;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Souko.Game.Domain.UseCase.Component;
 
 /// <summary>
 /// マップデータを扱いやすくするクラス.
 /// </summary>
-public class MapStatus
+public class MapStatus : IDisposable
 {
     /// <summary>
     /// マップのサイズ.
@@ -16,12 +19,18 @@ public class MapStatus
     public int Width => _width;
     private readonly int _width;
     
-    private readonly GameDefine.State[] _status;
+    private GameDefine.State[] _status;
 
     public MapStatus(GameDefine.State[] status, int width)
     {
         _status = status;
         _width = width;
+    }
+    
+    public MapStatus(MapStatus mapStatus)
+    {
+        _status = mapStatus._status.Clone() as GameDefine.State[];
+        _width = mapStatus._width;
     }
     
     /// <summary>
@@ -42,5 +51,10 @@ public class MapStatus
     {
         get => _status[v.x + v.y * _width];
         set => _status[v.x + v.y * _width] = value;
+    }
+
+    public void Dispose()
+    {
+        _status = null;
     }
 }

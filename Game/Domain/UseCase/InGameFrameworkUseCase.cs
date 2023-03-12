@@ -38,7 +38,15 @@ public class InGameFrameworkUseCase
         _playerUseCase.Pos = _mapUseCase.OriginalPlayerPos;
         return true;
     }
-    
+
+    ~InGameFrameworkUseCase()
+    {
+        _loggerUseCase.Dispose();
+        _mapUseCase.Dispose();
+        _inputUseCase.Dispose();
+        _playerUseCase.Dispose();
+    }
+
     /// <summary>
     /// ゲームループ更新.
     /// </summary>

@@ -1,4 +1,5 @@
-﻿using Souko.Game.Domain.Input;
+﻿using System;
+using Souko.Game.Domain.Input;
 using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Domain.UseCase;
@@ -6,7 +7,7 @@ namespace Souko.Game.Domain.UseCase;
 /// <summary>
 /// 入力を制御するユースケース.
 /// </summary>
-public class InputUseCase
+public class InputUseCase : IDisposable
 {
     private readonly LoggerUseCase _loggerUseCase;
     private readonly IInputController _inputController;
@@ -43,5 +44,9 @@ public class InputUseCase
     public bool GetReset()
     {
         return _inputData.Reset;
+    }
+
+    public void Dispose()
+    {
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Domain.UseCase;
@@ -5,7 +6,7 @@ namespace Souko.Game.Domain.UseCase;
 /// <summary>
 /// プレイヤーを制御するユースケース.
 /// </summary>
-public class PlayerUseCase
+public class PlayerUseCase : IDisposable
 {
     /// <summary>
     /// 現在地のプレイヤーの位置.
@@ -99,5 +100,9 @@ public class PlayerUseCase
         }
             
         return true;
+    }
+
+    public void Dispose()
+    {
     }
 }

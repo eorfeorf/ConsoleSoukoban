@@ -1,11 +1,12 @@
-﻿using Souko.Game.Domain.System;
+﻿using System;
+using Souko.Game.Domain.System;
 
 namespace Souko.Game.Domain.UseCase;
 
 /// <summary>
 /// ログ出力を制御するユースケース.
 /// </summary>
-public class LoggerUseCase
+public class LoggerUseCase : IDisposable
 {
     private readonly ILogger _logger;
     
@@ -21,5 +22,9 @@ public class LoggerUseCase
     public void Log(string message)
     {
         _logger.Log(message);
+    }
+
+    public void Dispose()
+    {
     }
 }

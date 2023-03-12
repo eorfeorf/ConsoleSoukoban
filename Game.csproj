@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Data\CacheContainer.cs" />
     <Compile Include="Game\Data\Map\IMapDataStore.cs" />
     <Compile Include="Game\Data\Map\MapData.cs" />
     <Compile Include="Game\Data\Map\MapDataStore.cs" />
