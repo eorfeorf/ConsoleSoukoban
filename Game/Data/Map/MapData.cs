@@ -7,13 +7,13 @@ public class MapData
 {
     public int Id { get; }
     // TODO:二次元配列にするかも.そしたらWidthいらない.
-    public int[] Data { get; }
+    public int[,] Status { get; }
     public int Width { get; }
 
-    public MapData(int id, int[] data, int width)
+    public MapData(int id, int[,] status, int width)
     {
         Id = id;
-        Data = data;
+        Status = status;
         Width = width;
     }
 }

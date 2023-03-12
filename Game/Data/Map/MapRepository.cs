@@ -42,10 +42,10 @@ public class MapRepository : IMapRepository
             return true;
         }
         
-        // シリアライズ.
-        var map = _mapDataStore.Load(mapId);
-        var status = map.Data.Select(x => (GameDefine.State) x).ToArray();
-        _status = new MapStatus(status, map.Width);
+        // マップデータをシリアライズ.
+        var mapData = _mapDataStore.Load(mapId);
+        var status = mapData.Status.Cast<int>().Select(x => (GameDefine.State) x).ToArray();
+        _status = new MapStatus(status, mapData.Status.GetLength(0));
         
         // キャッシュする.
         if (_status != null)
