@@ -55,6 +55,7 @@ public class MapUseCase
 
     public void Draw()
     {
+        mapView.DrawSetup();
         mapView.Draw(mapRepository.Status);
     }
         
