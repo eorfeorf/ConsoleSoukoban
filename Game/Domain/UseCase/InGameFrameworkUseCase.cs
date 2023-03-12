@@ -66,7 +66,7 @@ public class InGameFrameworkUseCase
         {
             // 不正移動先判定.
             var nextPosition = _playerUseCase.GetNextPosition(dir);
-            bool isValidState = _mapUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveValue[dir]);
+            var isValidState = _playerUseCase.CheckValidState(nextPosition, GameDefine.DirToMoveValue[dir]);
             if (!isValidState)
             {
                 return false;

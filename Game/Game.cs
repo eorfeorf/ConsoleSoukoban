@@ -17,6 +17,17 @@ namespace Souko.Game
         private static PlayerUseCase playerUseCase;
         private static LoggerUseCase loggerUseCase;
         private static InGameFrameworkUseCase inGameFrameworkUseCase;
+        
+        // 依存解決.
+        // TODO:DIContainerを使う.
+        private static void DependencyResolve()
+        {
+            loggerUseCase = new LoggerUseCase(new LoggerConsole());
+            mapUseCase = new MapUseCase(loggerUseCase, new MapRepository(new MapDataStore()), new MapViewCLI(new MapViewCLIMapper()));
+            inputUseCase = new InputUseCase(loggerUseCase, new InputControllerKeyboard(new InputKeyboard(), new InputControllerKeyboardMapper()));
+            playerUseCase = new PlayerUseCase(loggerUseCase, mapUseCase);
+            inGameFrameworkUseCase = new InGameFrameworkUseCase(loggerUseCase, mapUseCase, inputUseCase, playerUseCase);
+        }
 
         // エントリポイント.
         static void Main(string[] args)
@@ -46,17 +57,6 @@ namespace Souko.Game
 
             // コンソール依存なので放置.
             Console.ReadKey();
-        }
-
-        // 依存解決.
-        // TODO:DIContainerを使う.
-        private static void DependencyResolve()
-        {
-            loggerUseCase = new LoggerUseCase(new LoggerConsole());
-            mapUseCase = new MapUseCase(loggerUseCase, new MapRepository(new MapDataStore()), new MapViewCLI(new MapViewCLIMapper()));
-            inputUseCase = new InputUseCase(loggerUseCase, new InputControllerKeyboard(new InputKeyboard(), new InputControllerKeyboardMapper()));
-            playerUseCase = new PlayerUseCase(loggerUseCase, mapUseCase);
-            inGameFrameworkUseCase = new InGameFrameworkUseCase(loggerUseCase, mapUseCase, inputUseCase, playerUseCase);
         }
     }
 }

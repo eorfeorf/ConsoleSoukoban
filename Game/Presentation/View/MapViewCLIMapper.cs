@@ -12,7 +12,6 @@ public class MapViewCLIMapper
 {
     /// <summary>
     /// 状態と表示を紐づけるテーブル.
-    /// TODO:Dictionaryにすると安全.
     /// </summary>
     public readonly Dictionary<GameDefine.State, string> StateToIconTable = new()
     {

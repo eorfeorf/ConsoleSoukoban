@@ -88,47 +88,6 @@ public class MapUseCase
     }
     
     /// <summary>
-    /// 移動先が正常な状態か.
-    /// </summary>
-    /// <param name="nextPosition"></param>
-    /// <param name="moveValue"></param>
-    /// TODO:移動判定を別のUseCaseにした方がいいかも.
-    /// <returns></returns>
-    public bool CheckValidState(Vector2Int nextPosition, Vector2Int moveValue)
-    {
-        // マップ外.
-        var isInvalidMapRange = !(0 <= nextPosition.x && nextPosition.x < Status.Width &&
-                                  0 <= nextPosition.y && nextPosition.y < Status.Width); 
-        if (isInvalidMapRange)
-        {
-            return false;
-        }
-
-        // 移動先が有効な状態か.
-        var state = _mapRepository.Status[nextPosition];
-            
-        // 壁.
-        if (state == GameDefine.State.Wall)
-        {
-            return false;
-        }
-            
-        // 石.
-        if (state == GameDefine.State.Stone)
-        {
-            // 石の先が移動できるか.
-            var nextPosition2Ahead = nextPosition + moveValue;
-            var state2 = _mapRepository.Status[nextPosition2Ahead];
-            if (state2 == GameDefine.State.Wall || state2 == GameDefine.State.Stone)
-            {
-                return false;
-            }
-        }
-            
-        return true;
-    }
-
-    /// <summary>
     /// ある状態の座標を取得.
     /// </summary>
     /// <param name="status"></param>
