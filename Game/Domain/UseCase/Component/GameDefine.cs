@@ -4,10 +4,6 @@ namespace Souko.Game.Domain.UseCase.Component;
 
 public static class GameDefine
 {
-    // マップ１辺の長さ
-    // TODO:マップデータから取得する.
-    public const int MapLength = 10;
-
     // 不正なマップのインデックス.
     public static readonly Vector2Int InvalidPos = new Vector2Int(-1, -1);
 

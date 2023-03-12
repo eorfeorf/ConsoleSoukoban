@@ -5,10 +5,11 @@
 /// </summary>
 public class MapDataStore : IMapDataStore
 {
-    public int[] Load(int mapId)
+    public MapData Load(int mapId)
     {
         // TODO:外部データとして読み込み.
-        return new[]
+        // MapLoader作ったほうがいいかも・・・.
+        var data = new[]
         {
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
             1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -21,5 +22,7 @@ public class MapDataStore : IMapDataStore
             1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
             1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         };
+        var width = 10;
+        return new(data, width);
     }
 }

@@ -9,10 +9,10 @@ public static class IntExtension
     /// 変換.
     /// </summary>
     /// <param name="x"></param>
-    /// <param name="length"></param>
+    /// <param name="width"></param>
     /// <returns></returns>
-    public static Vector2Int ToVec2Int(this int x, int length)
+    public static Vector2Int ToVec2Int(this int x, int width)
     {
-        return new Vector2Int(x % length, x / length);
+        return new Vector2Int(x % width, x / width);
     }
 }

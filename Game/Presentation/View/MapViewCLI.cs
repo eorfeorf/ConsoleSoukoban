@@ -28,9 +28,9 @@ public class MapViewCLI : IMapView
         Console.CursorLeft = 0;
         Console.CursorTop = 0;
         
-        for (int i = 0; i < status.Width; ++i)
+        for (int i = 0; i < status.Length; ++i)
         {
-            if (i % GameDefine.MapLength == 0)
+            if (i % status.Width == 0)
             {
                 Console.Write("\n");
             }

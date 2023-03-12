@@ -32,7 +32,9 @@ public class MapRepository : IMapRepository
     /// <returns></returns>
     public bool Load(int mapId)
     {
-        _status = new MapStatus(_mapDataStore.Load(mapId).Select(x => (GameDefine.State)x).ToArray(), GameDefine.MapLength);
+        // TODO:キャッシュが欲しい.
+        var map = _mapDataStore.Load(mapId);
+        _status = new MapStatus(map.Data.Select(x => (GameDefine.State)x).ToArray(), map.Width);
         return _status != null;
     }
 }

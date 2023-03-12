@@ -6,12 +6,17 @@
 public class MapStatus
 {
     /// <summary>
+    /// マップのサイズ.
+    /// </summary>
+    public int Length => _status.Length;
+    
+    /// <summary>
     /// マップの横サイズ.
     /// </summary>
-    public int Width => _status.Length;
+    public int Width => _width;
+    private readonly int _width;
     
     private readonly GameDefine.State[] _status;
-    private readonly int _width;
 
     public MapStatus(GameDefine.State[] status, int width)
     {

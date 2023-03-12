@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Data\Map\IMapDataStore.cs" />
+    <Compile Include="Game\Data\Map\MapData.cs" />
     <Compile Include="Game\Data\Map\MapDataStore.cs" />
     <Compile Include="Game\Data\Map\MapRepository.cs" />
     <Compile Include="Game\Domain\Input\IInputController.cs" />

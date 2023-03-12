@@ -10,5 +10,5 @@ public interface IMapDataStore
     /// </summary>
     /// <param name="mapId"></param>
     /// <returns></returns>
-    public int[] Load(int mapId);
+    public MapData Load(int mapId);
 }

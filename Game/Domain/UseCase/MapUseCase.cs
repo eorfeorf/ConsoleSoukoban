@@ -96,8 +96,8 @@ public class MapUseCase
     public bool CheckValidState(Vector2Int nextPosition, Vector2Int moveValue)
     {
         // マップ外.
-        var isInvalidMapRange = !(0 <= nextPosition.x && nextPosition.x < GameDefine.MapLength &&
-                                  0 <= nextPosition.y && nextPosition.y < GameDefine.MapLength); 
+        var isInvalidMapRange = !(0 <= nextPosition.x && nextPosition.x < Status.Width &&
+                                  0 <= nextPosition.y && nextPosition.y < Status.Width); 
         if (isInvalidMapRange)
         {
             return false;
@@ -136,11 +136,11 @@ public class MapUseCase
     private List<Vector2Int> GetStatePositions(MapStatus status, GameDefine.State state)
     {
         var ret = new List<Vector2Int>();
-        for (int i = 0; i < status.Width; i++)
+        for (int i = 0; i < status.Length; i++)
         {
             if (status[i] == state)
             {
-                ret.Add(i.ToVec2Int(GameDefine.MapLength));
+                ret.Add(i.ToVec2Int(status.Width));
             }
         }
 
@@ -160,11 +160,11 @@ public class MapUseCase
     /// <returns></returns>
     private Vector2Int GetStatePosition(MapStatus status, GameDefine.State state)
     {
-        for (int i = 0; i < status.Width; i++)
+        for (int i = 0; i < status.Length; i++)
         {
             if (status[i] == state)
             {
-                return i.ToVec2Int(GameDefine.MapLength);
+                return i.ToVec2Int(status.Width);
             }
         }
 
