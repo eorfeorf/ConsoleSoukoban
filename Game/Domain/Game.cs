@@ -115,31 +115,6 @@ namespace Souko.Game
         /// <param name="dir"></param>
         private static void ApplyNextPosition(Vector2Int nowPosition, Vector2Int nextPosition, Vector2Int moveValue)
         {
-            #if false
-            for (var i = 2; i > 0; --i)
-            {
-                var nowPos = nowPosition + moveValue * (i - 1);
-                var nextPos = nowPosition + moveValue * i;
-
-                if (mapUseCase.Status[nextPos] != State.Wall &&
-                    mapUseCase.Status[nextPos] != State.Stone)
-                {
-                    mapUseCase.UpdateStatus(nowPos, nextPos, mapUseCase.Status[nowPos]);
-                }
-            }
-            
-            // ゴールの位置を復活
-            // Noneということはそのマスには誰もいない.
-            foreach (var g in goals)
-            {
-                if (mapUseCase.Status[g] == State.None)
-                {
-                    mapUseCase.UpdateStatus(g, g, State.Goal);
-                }
-            }
-
-            #else
-
             // 石の位置を更新.
             if (mapUseCase.Status[nextPosition] == State.Stone)
             {
@@ -160,7 +135,6 @@ namespace Souko.Game
                     mapUseCase.UpdateStatus(g, g, GameDefine.State.Goal);
                 }
             }
-            #endif
         }
     }
 }
