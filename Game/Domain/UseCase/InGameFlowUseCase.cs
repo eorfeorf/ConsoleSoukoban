@@ -16,7 +16,7 @@ public class InGameFlowUseCase
     /// 終了判定.
     /// </summary>
     /// <returns></returns>
-    public bool IsGameEnd(List<Vector2Int> goals)
+    public bool IsGameEnd(IList<Vector2Int> goals)
     {
         foreach (var g in goals)
         {

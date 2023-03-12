@@ -11,12 +11,13 @@ namespace Souko.Game.Domain.UseCase;
 public class MapUseCase
 {
     public MapStatus Status => mapRepository.Status;
-    
+    public Vector2Int OriginalPlayerPos => originalPlayerPos;
+    public IList<Vector2Int> OriginalGoalPos => _originalOriginalGoalPoPos;
+
     private IMapRepository mapRepository;
     private IMapView mapView;
-
     private Vector2Int originalPlayerPos;
-    private List<Vector2Int> originalGoalPos = new();
+    private List<Vector2Int> _originalOriginalGoalPoPos = new();
 
     public MapUseCase(IMapRepository mapRepository, IMapView mapView)
     {
@@ -24,11 +25,10 @@ public class MapUseCase
         this.mapView = mapView;
     }
 
-    public bool Load(int mapId, out OriginalPositionData originalPositionData)
+    public bool Load(int mapId)
     {
         if(!mapRepository.Load(mapId))
         {
-            originalPositionData = null;
             return false;
         }
         
@@ -37,20 +37,17 @@ public class MapUseCase
         if (originalPlayerPos == GameDefine.InvalidPos)
         {
             Console.WriteLine("マップデータにプレイヤーが見つかりませんでした。");
-            originalPositionData = null;
             return false;
         }
             
         // ゴール位置.
-        originalGoalPos = GetStatePositions(mapRepository.Status, GameDefine.State.Goal);
-        if (originalGoalPos.Count == 0)
+        _originalOriginalGoalPoPos = GetStatePositions(mapRepository.Status, GameDefine.State.Goal);
+        if (_originalOriginalGoalPoPos.Count == 0)
         {
             Console.WriteLine("マップデータにゴールが見つかりませんでした。");
-            originalPositionData = null;
             return false;
         }
 
-        originalPositionData = new OriginalPositionData(originalPlayerPos, originalGoalPos);
         return true;
     }
 

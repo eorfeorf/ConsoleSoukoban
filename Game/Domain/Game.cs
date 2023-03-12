@@ -20,9 +20,6 @@ namespace Souko.Game
         private static PlayerUseCase playerUseCase;
         private static InGameFlowUseCase inGameFlowUseCase;
         
-        // 初期値のゴールの位置
-        private static List<Vector2Int> goals = new();
-        
         // エントリポイント.
         static void Main(string[] args)
         {
@@ -42,7 +39,7 @@ namespace Souko.Game
                 mapUseCase.Draw();
 
                 // ゴール判定.
-                if (inGameFlowUseCase.IsGameEnd(goals))
+                if (inGameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos))
                 {
                     break;
                 }
@@ -66,7 +63,7 @@ namespace Souko.Game
                     if (!isValidState) continue;
 
                     // 移動適用.
-                    ApplyNextPosition(playerUseCase.Pos, nextPosition, DirToMoveIndex[(int)dir]);
+                    playerUseCase.ApplyNextPosition(playerUseCase.Pos, nextPosition, DirToMoveIndex[(int)dir]);
                 }
             }
 
@@ -84,7 +81,7 @@ namespace Souko.Game
                 )
             );
             inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
-            playerUseCase = new PlayerUseCase();
+            playerUseCase = new PlayerUseCase(mapUseCase);
             inGameFlowUseCase = new InGameFlowUseCase(mapUseCase);
         }
         
@@ -96,45 +93,15 @@ namespace Souko.Game
         public static bool Initialize(int mapId)
         {
             // マップ読み込み.
-            if (!mapUseCase.Load(mapId, out var originalPositionData))
+            if (!mapUseCase.Load(mapId))
             {
                 Console.WriteLine("マップデータが不正でした。");
                 return true;
             }
 
-            playerUseCase.Pos = originalPositionData.player;
-            goals = originalPositionData.goals;
+            playerUseCase.Pos = mapUseCase.OriginalPlayerPos;
             return false;
         }
         
-        /// <summary>
-        /// 移動を適用.
-        /// </summary>
-        /// <param name="nowPosition"></param>
-        /// <param name="nextPosition"></param>
-        /// <param name="dir"></param>
-        private static void ApplyNextPosition(Vector2Int nowPosition, Vector2Int nextPosition, Vector2Int moveValue)
-        {
-            // 石の位置を更新.
-            if (mapUseCase.Status[nextPosition] == State.Stone)
-            {
-                var nextPosition2Ahead = nextPosition + moveValue;
-                mapUseCase.UpdateStatus(nextPosition, nextPosition2Ahead, State.Stone);
-            }
-
-            // プレイヤーの位置を更新.
-            mapUseCase.UpdateStatus(nowPosition, nextPosition, State.Player);
-            playerUseCase.Pos = nextPosition;
-
-            // ゴールの位置を復活
-            // Noneということはそのマスには誰もいない.
-            foreach (var g in goals)
-            {
-                if (mapUseCase.Status[g] == GameDefine.State.None)
-                {
-                    mapUseCase.UpdateStatus(g, g, GameDefine.State.Goal);
-                }
-            }
-        }
     }
 }
