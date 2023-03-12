@@ -3,11 +3,11 @@ using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Domain.UseCase;
 
-public class InGameFlowUseCase
+public class GameFlowUseCase
 {
     private MapUseCase _mapUseCase;
     
-    public InGameFlowUseCase(MapUseCase mapUseCase)
+    public GameFlowUseCase(MapUseCase mapUseCase)
     {
         _mapUseCase = mapUseCase;
     }

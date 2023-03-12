@@ -18,7 +18,7 @@ namespace Souko.Game
         private static MapUseCase mapUseCase;
         private static InputUseCase inputUseCase;
         private static PlayerUseCase playerUseCase;
-        private static InGameFlowUseCase inGameFlowUseCase;
+        private static GameFlowUseCase gameFlowUseCase;
         
         // エントリポイント.
         static void Main(string[] args)
@@ -39,7 +39,7 @@ namespace Souko.Game
                 mapUseCase.Draw();
 
                 // ゴール判定.
-                if (inGameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos))
+                if (gameFlowUseCase.IsGameEnd(mapUseCase.OriginalGoalPos))
                 {
                     break;
                 }
@@ -82,7 +82,7 @@ namespace Souko.Game
             );
             inputUseCase = new InputUseCase(new InputController(new InputKeyboard()));
             playerUseCase = new PlayerUseCase(mapUseCase);
-            inGameFlowUseCase = new InGameFlowUseCase(mapUseCase);
+            gameFlowUseCase = new GameFlowUseCase(mapUseCase);
         }
         
         /// <summary>
