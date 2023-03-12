@@ -113,14 +113,15 @@ namespace Souko.Game
         private static bool Initialize(int mapId)
         {
             // マップ読み込み.
-            if (!mapUseCase.Load(mapId, out var originalPositionData))
+            if (!mapUseCase.Load(mapId))
             {
                 Console.WriteLine("マップデータが不正でした。");
                 return true;
             }
 
-            player.Pos = originalPositionData.player;
-            goals = originalPositionData.goals;
+            player.Pos = mapUseCase.OriginalPlayerPos;
+            goals = mapUseCase.OriginalGoalPos;
+
             return false;
         }
 
