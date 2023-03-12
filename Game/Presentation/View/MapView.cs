@@ -1,6 +1,6 @@
-﻿using System;
-using Souko.Game.Domain;
+﻿using Souko.Game.Domain;
 using Souko.Game.Domain.Map;
+using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Presentation.View;
 
@@ -15,7 +15,7 @@ public class MapView : IMapView
         this.mapViewSetupper = mapViewSetupper;
     }
 
-    public void Draw(GameDefine.State[] status)
+    public void Draw(MapStatus status)
     {
         mapViewSetupper.Setup();
         

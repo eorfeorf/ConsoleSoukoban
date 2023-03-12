@@ -1,8 +1,10 @@
-﻿namespace Souko.Game.Domain.Map;
+﻿using Souko.Game.Domain.UseCase.Component;
+
+namespace Souko.Game.Domain.Map;
 
 public interface IMapRepository
 {
-    public GameDefine.State[] Status { get; }
+    public MapStatus Status { get; }
     
     public bool Load(int mapId);
 }

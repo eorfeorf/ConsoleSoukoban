@@ -1,6 +1,8 @@
-﻿namespace Souko.Game.Domain.Map;
+﻿using Souko.Game.Domain.UseCase.Component;
+
+namespace Souko.Game.Domain.Map;
 
 public interface IMapView
 {
-    public void Draw(GameDefine.State[] status);
+    public void Draw(MapStatus status);
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Souko.Game.Domain.Map;
+using Souko.Game.Domain.UseCase.Component;
 
 namespace Souko.Game.Domain.UseCase;
 
@@ -9,15 +10,13 @@ namespace Souko.Game.Domain.UseCase;
 /// </summary>
 public class MapUseCase
 {
-    public GameDefine.State[] Status => mapRepository.Status;
-    public int OriginalPlayerPos => originalPlayerPos;
-    public List<int> OriginalGoalPos => originalGoalPos;
+    public MapStatus Status => mapRepository.Status;
     
     private IMapRepository mapRepository;
     private IMapView mapView;
 
-    private int originalPlayerPos;
-    private List<int> originalGoalPos = new();
+    private Vector2Int originalPlayerPos;
+    private List<Vector2Int> originalGoalPos = new();
 
     public MapUseCase(IMapRepository mapRepository, IMapView mapView)
     {
@@ -25,18 +24,20 @@ public class MapUseCase
         this.mapView = mapView;
     }
 
-    public bool Load(int mapId)
+    public bool Load(int mapId, out OriginalPositionData originalPositionData)
     {
         if(!mapRepository.Load(mapId))
         {
+            originalPositionData = null;
             return false;
         }
         
         // プレイヤー位置.
         originalPlayerPos = GetStatePosition(mapRepository.Status, GameDefine.State.Player);
-        if (originalPlayerPos == GameDefine.InvalidIndex)
+        if (originalPlayerPos == GameDefine.InvalidPos)
         {
             Console.WriteLine("マップデータにプレイヤーが見つかりませんでした。");
+            originalPositionData = null;
             return false;
         }
             
@@ -45,9 +46,11 @@ public class MapUseCase
         if (originalGoalPos.Count == 0)
         {
             Console.WriteLine("マップデータにゴールが見つかりませんでした。");
+            originalPositionData = null;
             return false;
         }
-        
+
+        originalPositionData = new OriginalPositionData(originalPlayerPos, originalGoalPos);
         return true;
     }
 
@@ -61,14 +64,14 @@ public class MapUseCase
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    public List<int> GetStatePositions(GameDefine.State[] status, GameDefine.State state)
+    public List<Vector2Int> GetStatePositions(MapStatus status, GameDefine.State state)
     {
-        var ret = new List<int>();
+        var ret = new List<Vector2Int>();
         for (int i = 0; i < status.Length; i++)
         {
             if (status[i] == state)
             {
-                ret.Add(i);
+                ret.Add(i.ToVec2Int(GameDefine.MapLength));
             }
         }
 
@@ -85,18 +88,18 @@ public class MapUseCase
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    private int GetStatePosition(GameDefine.State[] status, GameDefine.State state)
+    private Vector2Int GetStatePosition(MapStatus status, GameDefine.State state)
     {
         for (int i = 0; i < status.Length; i++)
         {
             if (status[i] == state)
             {
-                return i;
+                return i.ToVec2Int(GameDefine.MapLength);
             }
         }
 
         Console.WriteLine($"指定した状態がマップ上に存在しません.\nstate:{state}");
-        return GameDefine.InvalidIndex;
+        return GameDefine.InvalidPos;
     }
 
     /// <summary>
@@ -105,7 +108,7 @@ public class MapUseCase
     /// <param name="nowPosition"></param>
     /// <param name="nextPosition"></param>
     /// <param name="state"></param>
-    public void UpdateStatus(int nowPosition, int nextPosition, GameDefine.State state)
+    public void UpdateStatus(Vector2Int nowPosition, Vector2Int nextPosition, GameDefine.State state)
     {
         mapRepository.Status[nowPosition] = GameDefine.State.None;
         mapRepository.Status[nextPosition] = state;
@@ -117,11 +120,12 @@ public class MapUseCase
     /// <param name="nextPosition"></param>
     /// <param name="moveValue"></param>
     /// <returns></returns>
-    public bool CheckValidState(int nextPosition, int moveValue)
+    public bool CheckValidState(Vector2Int nextPosition, Vector2Int moveValue)
     {
         // マップ外.
-        var isValidMapRange = 0 <= nextPosition && nextPosition < mapRepository.Status.Length;
-        if (!isValidMapRange)
+        var isInvalidMapRange = !(0 <= nextPosition.x && nextPosition.x < GameDefine.MapLength &&
+                                  0 <= nextPosition.y && nextPosition.y < GameDefine.MapLength); 
+        if (isInvalidMapRange)
         {
             return false;
         }
