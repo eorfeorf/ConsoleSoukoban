@@ -1,15 +1,16 @@
 ﻿using System;
 using Souko.Game.Domain.System;
 
-namespace Souko.Game.UI.System;
-
-/// <summary>
-/// コンソールアプリケーションでログ出力を行うクラス.
-/// </summary>
-public class LoggerConsole : ILogger
+namespace Souko.Game.UI.System
 {
-    public void Log(string message)
+    /// <summary>
+    /// コンソールアプリケーションでログ出力を行うクラス.
+    /// </summary>
+    public class LoggerConsole : ILogger
     {
-        Console.Write(message);
+        public void Log(string message)
+        {
+            Console.Write(message);
+        }
     }
 }

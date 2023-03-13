@@ -1,7 +1,6 @@
 ﻿using System;
 using Souko.Game.Data.Map;
 using Souko.Game.Domain.UseCase;
-using Souko.Game.Domain.UseCase.Component;
 using Souko.Game.Presentation.Input.Keyboard;
 using Souko.Game.Presentation.View;
 using Souko.Game.UI.Input;

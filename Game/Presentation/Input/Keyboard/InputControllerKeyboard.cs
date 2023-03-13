@@ -1,43 +1,42 @@
 ﻿using System;
-using Souko.Game.Domain;
 using Souko.Game.Domain.Input;
-using Souko.Game.Domain.UseCase;
 using Souko.Game.Domain.UseCase.Component;
 
-namespace Souko.Game.Presentation.Input.Keyboard;
-
-/// <summary>
-/// キーボードによる入力制御.
-/// </summary>
-public class InputControllerKeyboard : IInputController
+namespace Souko.Game.Presentation.Input.Keyboard
 {
-    private readonly IInputDevice _inputDevice;
-    private readonly InputControllerKeyboardMapper _inputControllerKeyboardMapper;
-    
-    public InputControllerKeyboard(IInputDevice inputDevice, InputControllerKeyboardMapper inputControllerKeyboardMapper)
-    {
-        _inputDevice = inputDevice;
-        _inputControllerKeyboardMapper = inputControllerKeyboardMapper;
-    }
-
     /// <summary>
-    /// 入力取得.
+    /// キーボードによる入力制御.
     /// </summary>
-    /// <returns></returns>
-    public InputData GetInput()
+    public class InputControllerKeyboard : IInputController
     {
-        Console.Write("\n");
-        var key = _inputDevice.GetKey();
-        var data = new InputData();
+        private readonly IInputDevice _inputDevice;
+        private readonly InputControllerKeyboardMapper _inputControllerKeyboardMapper;
+    
+        public InputControllerKeyboard(IInputDevice inputDevice, InputControllerKeyboardMapper inputControllerKeyboardMapper)
+        {
+            _inputDevice = inputDevice;
+            _inputControllerKeyboardMapper = inputControllerKeyboardMapper;
+        }
 
-        // Dir.
-        data.Dir = _inputControllerKeyboardMapper.KeyboardToDirTable.ContainsKey(key)
-            ?_inputControllerKeyboardMapper.KeyboardToDirTable[key]
-            : GameDefine.Dir.None;
+        /// <summary>
+        /// 入力取得.
+        /// </summary>
+        /// <returns></returns>
+        public InputData GetInput()
+        {
+            Console.Write("\n");
+            var key = _inputDevice.GetKey();
+            var data = new InputData();
 
-        // Reset.
-        data.Reset = key == ConsoleKey.R;
+            // Dir.
+            data.Dir = _inputControllerKeyboardMapper.KeyboardToDirTable.ContainsKey(key)
+                ?_inputControllerKeyboardMapper.KeyboardToDirTable[key]
+                : GameDefine.Dir.None;
 
-        return data;
+            // Reset.
+            data.Reset = key == ConsoleKey.R;
+
+            return data;
+        }
     }
 }

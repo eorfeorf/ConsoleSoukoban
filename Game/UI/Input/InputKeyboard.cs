@@ -1,19 +1,20 @@
 ﻿using System;
 using Souko.Game.Presentation.Input;
 
-namespace Souko.Game.UI.Input;
-
-/// <summary>
-/// キーボードの入力を取得するクラス.
-/// </summary>
-public class InputKeyboard : IInputDevice
+namespace Souko.Game.UI.Input
 {
     /// <summary>
-    /// 入力取得.
+    /// キーボードの入力を取得するクラス.
     /// </summary>
-    /// <returns></returns>
-    public ConsoleKey GetKey()
+    public class InputKeyboard : IInputDevice
     {
-        return Console.ReadKey().Key;
+        /// <summary>
+        /// 入力取得.
+        /// </summary>
+        /// <returns></returns>
+        public ConsoleKey GetKey()
+        {
+            return Console.ReadKey().Key;
+        }
     }
 }

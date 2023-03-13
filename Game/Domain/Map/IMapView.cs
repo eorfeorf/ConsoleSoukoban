@@ -1,11 +1,12 @@
 ﻿using Souko.Game.Domain.UseCase.Component;
 
-namespace Souko.Game.Domain.Map;
-
-/// <summary>
-/// マップの描画を吸収するインターフェイス.
-/// </summary>
-public interface IMapView
+namespace Souko.Game.Domain.Map
 {
-    public void Draw(MapStatus status);
+    /// <summary>
+    /// マップの描画を吸収するインターフェイス.
+    /// </summary>
+    public interface IMapView
+    {
+        public void Draw(MapStatus status);
+    }
 }

@@ -1,30 +1,31 @@
 ﻿using System;
 using Souko.Game.Domain.System;
 
-namespace Souko.Game.Domain.UseCase;
-
-/// <summary>
-/// ログ出力を制御するユースケース.
-/// </summary>
-public class LoggerUseCase : IDisposable
+namespace Souko.Game.Domain.UseCase
 {
-    private readonly ILogger _logger;
-    
-    public LoggerUseCase(ILogger logger)
-    {
-        _logger = logger;
-    }
-
     /// <summary>
-    /// 出力.
+    /// ログ出力を制御するユースケース.
     /// </summary>
-    /// <param name="message"></param>
-    public void Log(string message)
+    public class LoggerUseCase : IDisposable
     {
-        _logger.Log(message);
-    }
+        private readonly ILogger _logger;
+    
+        public LoggerUseCase(ILogger logger)
+        {
+            _logger = logger;
+        }
 
-    public void Dispose()
-    {
+        /// <summary>
+        /// 出力.
+        /// </summary>
+        /// <param name="message"></param>
+        public void Log(string message)
+        {
+            _logger.Log(message);
+        }
+
+        public void Dispose()
+        {
+        }
     }
 }

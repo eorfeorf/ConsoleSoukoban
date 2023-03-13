@@ -1,13 +1,14 @@
-﻿namespace Souko.Game.Domain.System;
-
-/// <summary>
-/// ログ出力を吸収するインターフェイス.
-/// </summary>
-public interface ILogger
+﻿namespace Souko.Game.Domain.System
 {
     /// <summary>
-    /// 出力.
+    /// ログ出力を吸収するインターフェイス.
     /// </summary>
-    /// <param name="message"></param>
-    public void Log(string message);
+    public interface ILogger
+    {
+        /// <summary>
+        /// 出力.
+        /// </summary>
+        /// <param name="message"></param>
+        public void Log(string message);
+    }
 }
